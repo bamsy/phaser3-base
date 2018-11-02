@@ -6,3 +6,4 @@
 npm install
 npm run dev 
 ```
+step 3 - profit
