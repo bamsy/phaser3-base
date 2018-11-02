@@ -1,6 +1,5 @@
 import 'phaser';
 import BootScene from './scenes/BootScene';
-import TitleScene from './scenes/TitleScene';
 import GameScene from './scenes/GameScene';
 
 const config = {
@@ -20,7 +19,6 @@ const config = {
     },
     scene: [
         BootScene,
-        TitleScene,
         GameScene
     ]
 };
