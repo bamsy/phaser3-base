@@ -14,8 +14,6 @@ class BootScene extends Phaser.Scene {
         })
 
         this.load.on('complete', () => {
-            // prepare all animations, defined in a separate file
-            // makeAnimations(this);
             progress.destroy();
             this.scene.start('TitleScene');
         });
