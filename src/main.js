@@ -29,11 +29,9 @@ var reticle = null;
 var moveKeys = null;
 var playerBullets = null;
 var enemyBullets = null;
-var time = 0;
 var hp1 = null;
 var hp2 = null;
 var hp3 = null;
-var background = null;
 
 function preload ()
 {
