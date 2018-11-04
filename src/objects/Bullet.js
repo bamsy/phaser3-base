@@ -1,3 +1,6 @@
+/**
+ * Base Class for a Bullet
+ */
 class Bullet extends Phaser.GameObjects.Image {
     constructor(scene) {
         super(scene)

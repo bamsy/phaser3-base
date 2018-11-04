@@ -1,7 +1,7 @@
 /**
- * Base class for a Player
+ * Base class for an enemy
  */
-class Player extends Phaser.Physics.Arcade. Sprite {
+class Enemy extends Phaser.Physics.Arcade. Sprite {
     constructor(scene,x,y,texture,frame) {
         super(scene,x,y,texture,frame);
         scene.physics.world.enable(this);
@@ -9,4 +9,4 @@ class Player extends Phaser.Physics.Arcade. Sprite {
     }
 }
 
-export default Player;
+export default Enemy;
