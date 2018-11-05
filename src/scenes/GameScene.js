@@ -1,106 +1,56 @@
+import Bullet from '../objects/Bullet'
+import Player from '../objects/Player'
+import Enemy from '../objects/Enemy'
+import Reticle from '../objects/Reticle'
+
 class GameScene extends Phaser.Scene {
     constructor(test) {
         super({
             key: 'GameScene'
         })
+        //props
+        this.player = null;
+        this.enemy = null;
+        this.healthpoints = null;
+        this.reticle = null;
+        this.moveKeys = null;
+        this.playerBullets = null;
+        this.enemyBullets = null;
+        this.hp1 = null;
+        this.hp2 = null;
+        this.hp3 = null;
     }
 
-    //#TODO Refactor some of this into a player and enemy class
-    player = null;
-    healthpoints = null;
-    reticle = null;
-    moveKeys = null;
-    playerBullets = null;
-    enemyBullets = null;
-    time = 0;
-    hp1 = null;
-    hp2 = null;
-    hp3 = null;
-    background = null;
-
-    //#TODO Refactor this later into a separate file
-    Bullet = new Phaser.Class({
-        Extends: Phaser.GameObjects.Image,
-        initialize:
-
-        //Bullet Constructor
-        function Bullet (scene)
-        {
-            this.speed = 1;
-            this.born = 0;
-            this.direction = 0;
-            this.xSpeed = 0;
-            this.ySpeed = 0;
-            this.setSize(12, 12, true);
-        },
-
-            // Fires a bullet from the player to the reticle
-        fire: function (shooter, target)
-        {
-            this.setPosition(shooter.x, shooter.y); // Initial position
-            this.direction = Math.atan( (target.x-this.x) / (target.y-this.y));
-
-            // Calculate X and y velocity of bullet to moves it from shooter to target
-            if (target.y >= this.y)
-            {
-                this.xSpeed = this.speed*Math.sin(this.direction);
-                this.ySpeed = this.speed*Math.cos(this.direction);
-            }
-            else
-            {
-                this.xSpeed = -this.speed*Math.sin(this.direction);
-                this.ySpeed = -this.speed*Math.cos(this.direction);
-            }
-
-            this.rotation = shooter.rotation; // angle bullet with shooters rotation
-            this.born = 0; // Time since new bullet spawned
-        },
-
-        // Updates the position of the bullet each cycle
-        update: function (time, delta)
-        {
-            this.x += this.xSpeed * delta;
-            this.y += this.ySpeed * delta;
-            this.born += delta;
-            if (this.born > 1800)
-            {
-                this.setActive(false);
-                this.setVisible(false);
-            }
-        }
-
-    })
-
-    preload ()
+    preload()
     {
-            // Load in images and sprites
-        this.load.image('background', 'assets/images/skies/underwater1.png');
+        // Load in images and sprites
         this.load.spritesheet('player_handgun', 'assets/images/sprites/player_handgun.png',{ frameWidth: 66, frameHeight: 60 }); // Made by tokkatrain: https://tokkatrain.itch.io/top-down-basic-set
         this.load.image('bullet', 'assets/images/sprites/bullet6.png');
         this.load.image('target', 'assets/images/demoscene/ball.png');
+        this.load.image('background', 'assets/images/skies/underwater1.png');
     }
 
-    create ()
+    create()
     {
-        var self = this;
         // Set world bounds
         this.physics.world.setBounds(0, 0, 1600, 1200);
 
         // Add 2 groups for Bullet objects
-        this.playerBullets = this.physics.add.group({ classType: this.Bullet, runChildUpdate: true });
-        this.enemyBullets = this.physics.add.group({ classType: this.Bullet, runChildUpdate: true });
+        this.playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
+        this.enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
 
         // Add background player, enemy, reticle, healthpoint sprites
-        this.background =  this.add.image(800, 600, 'background');
-        this.player = this.physics.add.sprite(800, 600, 'player_handgun');
-        this.enemy = this.physics.add.sprite(300, 600, 'player_handgun');
-        this.reticle = this.physics.add.sprite(800, 700, 'target');
+        let background = this.add.image(800, 600, 'background');
+        this.player = new Player (this,800, 600, 'player_handgun');
+        this.enemy = new Enemy(this,300, 600, 'player_handgun');
+
+        this.reticle = new Reticle(this, 800, 700, 'target');
         this.hp1 = this.add.image(-350, -250, 'target').setScrollFactor(0.5, 0.5);
         this.hp2 = this.add.image(-300, -250, 'target').setScrollFactor(0.5, 0.5);
         this.hp3 = this.add.image(-250, -250, 'target').setScrollFactor(0.5, 0.5);
 
         // Set image/sprite properties
-        this.background.setOrigin(0.5, 0.5).setDisplaySize(1600, 1200);
+        background.setOrigin(0.5, 0.5).setDisplaySize(1600, 1200);
         this.player.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true).setDrag(500, 500);
         this.enemy.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true);
         this.reticle.setOrigin(0.5, 0.5).setDisplaySize(25, 25).setCollideWorldBounds(true);
@@ -117,84 +67,24 @@ class GameScene extends Phaser.Scene {
         this.cameras.main.zoom = 0.5;
         this.cameras.main.startFollow(this.player);
 
-        // Creates object for input with WASD kets
-        this.moveKeys = this.input.keyboard.addKeys({
-            'up': Phaser.Input.Keyboard.KeyCodes.W,
-            'down': Phaser.Input.Keyboard.KeyCodes.S,
-            'left': Phaser.Input.Keyboard.KeyCodes.A,
-            'right': Phaser.Input.Keyboard.KeyCodes.D
-        });
-
-        // Enables movement of player with WASD keys
-        this.input.keyboard.on('keydown_W', function (event) {
-            self.player.setAccelerationY(-800);
-        });
-        this.input.keyboard.on('keydown_S', function (event) {
-            self.player.setAccelerationY(800);
-        });
-        this.input.keyboard.on('keydown_A', function (event) {
-            self.player.setAccelerationX(-800);
-        });
-        this.input.keyboard.on('keydown_D', function (event) {
-            self.player.setAccelerationX(800);
-        });
-
-        // Stops player acceleration on uppress of WASD keys
-        this.input.keyboard.on('keyup_W', function (event) {
-            if (self.moveKeys['down'].isUp)
-                self.player.setAccelerationY(0);
-        });
-        this.input.keyboard.on('keyup_S', function (event) {
-            if (self.moveKeys['up'].isUp)
-                self.player.setAccelerationY(0);
-        });
-        this.input.keyboard.on('keyup_A', function (event) {
-            if (self.moveKeys['right'].isUp)
-                self.player.setAccelerationX(0);
-        });
-        this.input.keyboard.on('keyup_D', function (event) {
-            if (self.moveKeys['left'].isUp)
-                self.player.setAccelerationX(0);
-        });
-
         // Fires bullet from player on left click of mouse
-        this.input.on('pointerdown', function (pointer, time, lastFired) {
-            if (self.player.active === false)
-                return;
-
-            // Get bullet from bullets group
-            console.log(self.playerBullets);
-            var bullet = self.playerBullets.get().setActive(true).setVisible(true);
-
-            if (bullet)
-            {
-                bullet.fire(player, reticle);
-                self.physics.add.collider(self.enemy, bullet, self.enemyHitCallback);
-            }
-        }, this);
+        this.player.bulletFireSetup();
 
         // Pointer lock will only work after mousedown
-        this.game.canvas.addEventListener('mousedown', function () {
-            self.game.input.mouse.requestPointerLock();
+        let game = this.game;
+        game.canvas.addEventListener('mousedown', function () {
+            game.input.mouse.requestPointerLock();
         });
 
         // Exit pointer lock when Q or escape (by default) is pressed.
         this.input.keyboard.on('keydown_Q', function (event) {
-            if (self.game.input.mouse.locked)
-                self.game.input.mouse.releasePointerLock();
-        }, 0, self);
+            if (game.input.mouse.locked)
+                game.input.mouse.releasePointerLock();
+        }, 0, this);
 
-        // Move reticle upon locked pointer move
-        this.input.on('pointermove', function (pointer) {
-            if (self.input.mouse.locked)
-            {
-                self.reticle.x += pointer.movementX;
-                self.reticle.y += pointer.movementY;
-            }
-        }, this);    
     }
 
-    update (time, delta)
+    update(time,delta)
     {
         // Rotates player to face towards reticle
         this.player.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y);
@@ -209,11 +99,9 @@ class GameScene extends Phaser.Scene {
         // Constrain velocity of player
         this.constrainVelocity(this.player, 500);
 
-        // Constrain position of constrainReticle
-        this.constrainReticle(this.reticle);
-
         // Make enemy fire
-        this.enemyFire(this.enemy, this.player, this.time, this);
+        this.enemyFire(this.enemy, this.player, time, this);
+
     }
 
     enemyHitCallback(enemyHit, bulletHit)
@@ -227,7 +115,7 @@ class GameScene extends Phaser.Scene {
             // Kill enemy if health <= 0
             if (enemyHit.health <= 0)
             {
-            enemyHit.setActive(false).setVisible(false);
+                enemyHit.setActive(false).setVisible(false);
             }
 
             // Destroy bullet
@@ -246,15 +134,15 @@ class GameScene extends Phaser.Scene {
             // Kill hp sprites and kill player if health <= 0
             if (playerHit.health == 2)
             {
-                hp3.destroy();
+                this.hp3.destroy();
             }
             else if (playerHit.health == 1)
             {
-                hp2.destroy();
+                this.hp2.destroy();
             }
             else
             {
-                hp1.destroy();
+                this.hp1.destroy();
                 // Game over state should execute here
             }
 
@@ -262,7 +150,7 @@ class GameScene extends Phaser.Scene {
             bulletHit.setActive(false).setVisible(false);
         }
     }
-    
+
     enemyFire(enemy, player, time, gameObject)
     {
         if (enemy.active === false)
@@ -275,7 +163,7 @@ class GameScene extends Phaser.Scene {
             enemy.lastFired = time;
 
             // Get bullet from bullets group
-            var bullet = enemyBullets.get().setActive(true).setVisible(true);
+            var bullet = this.enemyBullets.get().setActive(true).setVisible(true);
 
             if (bullet)
             {
@@ -306,26 +194,6 @@ class GameScene extends Phaser.Scene {
             sprite.body.velocity.y = vy;
         }
     }
-
-    // Ensures reticle does not move offscreen
-    constrainReticle(reticle)
-    {
-        var distX = reticle.x-this.player.x; // X distance between player & reticle
-        var distY = reticle.y-this.player.y; // Y distance between player & reticle
-
-        // Ensures reticle cannot be moved offscreen (player follow)
-        if (distX > 800)
-            reticle.x = this.player.x+800;
-        else if (distX < -800)
-            reticle.x = this.player.x-800;
-
-        if (distY > 600)
-            reticle.y = this.player.y+600;
-        else if (distY < -600)
-            reticle.y = this.player.y-600;
-    }
-
-    
 }
 
 export default GameScene

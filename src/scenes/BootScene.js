@@ -18,9 +18,6 @@ class BootScene extends Phaser.Scene {
             this.scene.start('TitleScene');
         });
 
-        // background
-        this.load.image('background', 'assets/images/tile_grass-600x600.jpg')
-
         // Texture packer will do this for us
         this.load.atlas('mario-sprites', 'assets/images/mario-sprites.png', 'assets/images/mario-sprites.json');
 
