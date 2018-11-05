@@ -83,21 +83,17 @@ function create ()
     // Set camera properties
     this.cameras.main.zoom = 0.5;
     this.cameras.main.startFollow(player);
+    
+    //Need to expose some variables to other objects so set them on the scene.
+    //this will need to change once we move this into a scene class
+    this.player = player;
+    this.enemy = enemy;
+    this.reticle = reticle;
+    this.playerBullets = playerBullets;
+    this.enemyHitCallback = enemyHitCallback;
 
     // Fires bullet from player on left click of mouse
-    this.input.on('pointerdown', function (pointer, time, lastFired) {
-        if (player.active === false)
-            return;
-
-        // Get bullet from bullets group
-        var bullet = playerBullets.get().setActive(true).setVisible(true);
-
-        if (bullet)
-        {
-            bullet.fire(player, reticle);
-            this.physics.add.collider(enemy, bullet, enemyHitCallback);
-        }
-    }, this);
+    player.bulletFireSetup();
 
     // Pointer lock will only work after mousedown
     game.canvas.addEventListener('mousedown', function () {
@@ -111,6 +107,7 @@ function create ()
     }, 0, this);
 
 }
+
 
 function enemyHitCallback(enemyHit, bulletHit)
 {

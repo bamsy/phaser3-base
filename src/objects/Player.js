@@ -10,7 +10,23 @@ class Player extends Phaser.Physics.Arcade. Sprite {
 
         this.setMovement();
     }
-
+    bulletFireSetup(){
+        let scene = this.scene;
+        // Fires bullet from player on left click of mouse
+        scene.input.on('pointerdown', function (pointer, time, lastFired) {
+            if (scene.player.active === false)
+                return;
+    
+            // Get bullet from bullets group
+            var bullet = scene.playerBullets.get().setActive(true).setVisible(true);
+    
+            if (bullet)
+            {
+                bullet.fire(scene.player, scene.reticle);
+                scene.physics.add.collider(scene.enemy, bullet, scene.enemyHitCallback);
+            }
+        }, scene);
+    }
     setMovement() {
         //Assign this to a variable so we can use it.
         let player = this;
