@@ -21,6 +21,25 @@ class Reticle extends Phaser.Physics.Arcade. Sprite {
             }
         }, reticle.scene);
     }
+
+    // Ensures reticle does not move offscreen
+    update()
+    {
+        let reticle = this;
+        var distX = reticle.x-reticle.scene.player.x; // X distance between player & reticle
+        var distY = reticle.y-reticle.scene.player.y; // Y distance between player & reticle
+
+        // Ensures reticle cannot be moved offscreen (player follow)
+        if (distX > 800)
+            reticle.x = reticle.scene.player.x+800;
+        else if (distX < -800)
+            reticle.x = reticle.scene.player.x-800;
+
+        if (distY > 600)
+            reticle.y = reticle.scene.player.y+600;
+        else if (distY < -600)
+            reticle.y = reticle.scene.player.y-600;
+    }
 }
 
 export default Reticle;

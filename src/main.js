@@ -90,6 +90,7 @@ function create ()
     this.enemy = enemy;
     this.reticle = reticle;
     this.playerBullets = playerBullets;
+    this.enemyBullets = enemyBullets;
     this.enemyHitCallback = enemyHitCallback;
 
     // Fires bullet from player on left click of mouse
@@ -200,24 +201,6 @@ function constrainVelocity(sprite, maxVelocity)
     }
 }
 
-// Ensures reticle does not move offscreen
-function constrainReticle(reticle)
-{
-    var distX = reticle.x-player.x; // X distance between player & reticle
-    var distY = reticle.y-player.y; // Y distance between player & reticle
-
-    // Ensures reticle cannot be moved offscreen (player follow)
-    if (distX > 800)
-        reticle.x = player.x+800;
-    else if (distX < -800)
-        reticle.x = player.x-800;
-
-    if (distY > 600)
-        reticle.y = player.y+600;
-    else if (distY < -600)
-        reticle.y = player.y-600;
-}
-
 function update (time, delta)
 {
     // Rotates player to face towards reticle
@@ -232,9 +215,6 @@ function update (time, delta)
 
     // Constrain velocity of player
     constrainVelocity(player, 500);
-
-    // Constrain position of constrainReticle
-    constrainReticle(reticle);
 
     // Make enemy fire
     enemyFire(enemy, player, time, this);
