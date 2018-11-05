@@ -2,6 +2,7 @@ import 'phaser'
 import Bullet from './objects/Bullet'
 import Player from './objects/Player'
 import Enemy from './objects/Enemy'
+import Reticle from './objects/Reticle'
 
 var config = {
     type: Phaser.WEBGL,
@@ -60,7 +61,7 @@ function create ()
     player = new Player (this,800, 600, 'player_handgun');
     enemy = new Enemy(this,300, 600, 'player_handgun');
 
-    reticle = this.physics.add.sprite(800, 700, 'target');
+    reticle = new Reticle(this, 800, 700, 'target');
     hp1 = this.add.image(-350, -250, 'target').setScrollFactor(0.5, 0.5);
     hp2 = this.add.image(-300, -250, 'target').setScrollFactor(0.5, 0.5);
     hp3 = this.add.image(-250, -250, 'target').setScrollFactor(0.5, 0.5);
