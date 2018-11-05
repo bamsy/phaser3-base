@@ -110,15 +110,6 @@ function create ()
             game.input.mouse.releasePointerLock();
     }, 0, this);
 
-    // Move reticle upon locked pointer move
-    this.input.on('pointermove', function (pointer) {
-        if (this.input.mouse.locked)
-        {
-            reticle.x += pointer.movementX;
-            reticle.y += pointer.movementY;
-        }
-    }, this);
-
 }
 
 function enemyHitCallback(enemyHit, bulletHit)
