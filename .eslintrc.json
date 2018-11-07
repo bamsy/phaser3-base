@@ -40,7 +40,6 @@
       "comma-dangle": ["error", "never"],
       "comma-style": ["error", "last"],
       "computed-property-spacing": ["error", "never"],
-      "consistent-this": ["error", "_this"],
       "eol-last": ["error"],
       "func-call-spacing": ["error", "never"],
       "indent": ["error", 4, {
