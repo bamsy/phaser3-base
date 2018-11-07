@@ -116,12 +116,14 @@ class GameScene extends Phaser.Scene {
 
     }
 
-    enemyHitCallback(enemyHit, bulletHit)
+enemyHitCallback(enemyHit, bulletHit)
     {
         // Reduce health of enemy
         if (bulletHit.active === true && enemyHit.active === true)
         {
             enemyHit.health = enemyHit.health - 1;
+            console.log("Enemy hp: ", enemyHit.health);
+
             // Kill enemy if health <= 0
             if (enemyHit.health <= 0)
             {
@@ -139,19 +141,20 @@ class GameScene extends Phaser.Scene {
         if (bulletHit.active === true && playerHit.active === true)
         {
             playerHit.health = playerHit.health - 1;
+            console.log("Player hp: ", playerHit.health);
 
             // Kill hp sprites and kill player if health <= 0
             if (playerHit.health == 2)
             {
-                playerHit.scene.hp3.destroy();
+                this.hp3.destroy();
             }
             else if (playerHit.health == 1)
             {
-                playerHit.scene.hp2.destroy();
+                this.hp2.destroy();
             }
             else
             {
-                playerHit.scene.hp1.destroy();
+                this.hp1.destroy();
                 // Game over state should execute here
             }
 
@@ -178,7 +181,7 @@ class GameScene extends Phaser.Scene {
             {
                 bullet.fire(enemy, player);
                 // Add collider between bullet and player
-                gameObject.physics.add.collider(player, bullet, this.playerHitCallback);
+                gameObject.physics.add.collider(player, bullet, playerHitCallback);
             }
         }
     }
