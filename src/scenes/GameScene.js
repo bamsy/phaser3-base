@@ -28,10 +28,14 @@ class GameScene extends Phaser.Scene {
         this.load.image('bullet', 'assets/images/sprites/bullet6.png');
         this.load.image('target', 'assets/images/demoscene/ball.png');
         this.load.image('background', 'assets/images/skies/underwater1.png');
+        this.load.image('gunfire', 'assets/sprites/fire1_01.png')
+        this.load.audio('pistol', 'assets/sounds/pistol.mp3')
+        this.load.audio('shotgun', 'assets/sounds/shotgun.mp3')
     }
 
     create()
     {
+
         // Set world bounds
         this.physics.world.setBounds(0, 0, 1600, 1200);
 
@@ -41,6 +45,15 @@ class GameScene extends Phaser.Scene {
 
         // Add background player, enemy, reticle, healthpoint sprites
         let background = this.add.image(800, 600, 'background');
+
+        /*
+        in an example, the player and enemy are added like this
+        and it makes the player and enemy unable to pass through each other, and they can push each other
+        
+        player = this.physics.add.sprite(800, 600, 'player_handgun');
+        enemy = this.physics.add.sprite(300, 600, 'player_handgun');
+        */
+
         this.player = new Player (this,800, 600, 'player_handgun');
         this.enemy = new Enemy(this,300, 600, 'player_handgun');
 
@@ -81,7 +94,6 @@ class GameScene extends Phaser.Scene {
             if (game.input.mouse.locked)
                 game.input.mouse.releasePointerLock();
         }, 0, this);
-
     }
 
     update(time,delta)
@@ -110,8 +122,6 @@ class GameScene extends Phaser.Scene {
         if (bulletHit.active === true && enemyHit.active === true)
         {
             enemyHit.health = enemyHit.health - 1;
-            console.log("Enemy hp: ", enemyHit.health);
-
             // Kill enemy if health <= 0
             if (enemyHit.health <= 0)
             {
@@ -129,20 +139,19 @@ class GameScene extends Phaser.Scene {
         if (bulletHit.active === true && playerHit.active === true)
         {
             playerHit.health = playerHit.health - 1;
-            console.log("Player hp: ", playerHit.health);
 
             // Kill hp sprites and kill player if health <= 0
             if (playerHit.health == 2)
             {
-                this.hp3.destroy();
+                playerHit.scene.hp3.destroy();
             }
             else if (playerHit.health == 1)
             {
-                this.hp2.destroy();
+                playerHit.scene.hp2.destroy();
             }
             else
             {
-                this.hp1.destroy();
+                playerHit.scene.hp1.destroy();
                 // Game over state should execute here
             }
 
@@ -169,7 +178,7 @@ class GameScene extends Phaser.Scene {
             {
                 bullet.fire(enemy, player);
                 // Add collider between bullet and player
-                gameObject.physics.add.collider(player, bullet, playerHitCallback);
+                gameObject.physics.add.collider(player, bullet, this.playerHitCallback);
             }
         }
     }
