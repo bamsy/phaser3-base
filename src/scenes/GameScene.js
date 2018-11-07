@@ -1,157 +1,197 @@
+import Bullet from '../objects/Bullet';
+import Player from '../objects/Player';
+import Enemy from '../objects/Enemy';
+import Reticle from '../objects/Reticle';
+
 class GameScene extends Phaser.Scene {
-    constructor(test) {
-        super({
-            key: 'GameScene'
-        })
+    constructor (test) {
+        super({ key: 'GameScene' });
+
+        // props
+        this.player = null;
+        this.enemy = null;
+        this.healthpoints = null;
+        this.reticle = null;
+        this.moveKeys = null;
+        this.playerBullets = null;
+        this.enemyBullets = null;
+        this.hp1 = null;
+        this.hp2 = null;
+        this.hp3 = null;
     }
 
-    preload ()
-    {
-        this.load.image('sky', 'assets/images/sky.png');
-        this.load.image('ground', 'assets/images/platform.png');
-        this.load.image('star', 'assets/images/star.png');
-        this.load.image('bomb', 'assets/images/bomb.png');
-        this.load.spritesheet('dude', 'assets/images/dude.png',{ frameWidth: 32, frameHeight: 48 });
+    preload () {
+        // Load in images and sprites
+        this.load.spritesheet('player_handgun', 'assets/images/sprites/player_handgun.png', { frameWidth: 66, frameHeight: 60 });
+        this.load.image('bullet', 'assets/images/sprites/bullet6.png');
+        this.load.image('target', 'assets/images/demoscene/ball.png');
+        this.load.image('background', 'assets/images/skies/underwater1.png');
+        this.load.image('gunfire', 'assets/images/sprites/fire1_01.png');
+        this.load.audio('pistol', 'assets/sounds/pistol.mp3');
+        this.load.audio('shotgun', 'assets/sounds/shotgun.mp3');
     }
 
-    score = 0;
-    scoreText = "";
-    player = {};
-    platforms = {};
-    cursors = {};
-    bombs = {};
-    stars = {};
+    create () {
+        // Set world bounds
+        this.physics.world.setBounds(0, 0, 1600, 1200);
 
-    create ()
-    {
-        //background
-        this.add.image(400, 300, 'sky');
+        // Add 2 groups for Bullet objects
+        this.playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
+        this.enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
+
+        // Add background player, enemy, reticle, healthpoint sprites
+        let background = this.add.image(800, 600, 'background');
+
+        /*
+        in an example, the player and enemy are added like this
+        and it makes the player and enemy unable to pass through each other, and they can push each other
         
-        //this.platforms
-        this.platforms = this.physics.add.staticGroup();
+        player = this.physics.add.sprite(800, 600, 'player_handgun');
+        enemy = this.physics.add.sprite(300, 600, 'player_handgun');
+        */
 
-        this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+        this.player = new Player(this, 800, 600, 'player_handgun');
+        this.enemy = new Enemy(this, 300, 600, 'player_handgun');
 
-        this.platforms.create(600, 400, 'ground');
-        this.platforms.create(50, 250, 'ground');
-        this.platforms.create(750, 220, 'ground');
-        
-        //this.player
-        this.player = this.physics.add.sprite(100, 450, 'dude');
-        this.player.setBounce(0.2);
-        this.player.setCollideWorldBounds(true);
+        this.reticle = new Reticle(this, 800, 700, 'target');
+        this.hp1 = this.add.image(-350, -250, 'target').setScrollFactor(0.5, 0.5);
+        this.hp2 = this.add.image(-300, -250, 'target').setScrollFactor(0.5, 0.5);
+        this.hp3 = this.add.image(-250, -250, 'target').setScrollFactor(0.5, 0.5);
 
-        this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-            frameRate: 10,
-            repeat: -1
+        // Set image/sprite properties
+        background.setOrigin(0.5, 0.5).setDisplaySize(1600, 1200);
+        this.player.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true).setDrag(500, 500);
+        this.enemy.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true);
+        this.reticle.setOrigin(0.5, 0.5).setDisplaySize(25, 25).setCollideWorldBounds(true);
+        this.hp1.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
+        this.hp2.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
+        this.hp3.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
+
+        // Set sprite variables
+        this.player.health = 3;
+        this.enemy.health = 3;
+        this.enemy.lastFired = 0;
+
+        // Set camera properties
+        this.cameras.main.zoom = 0.5;
+        this.cameras.main.startFollow(this.player);
+
+        // Fires bullet from player on left click of mouse
+        this.player.bulletFireSetup();
+
+        // Pointer lock will only work after mousedown
+        let game = this.game;
+        game.canvas.addEventListener('mousedown', function () {
+            game.input.mouse.requestPointerLock();
         });
 
-        this.anims.create({
-            key: 'turn',
-            frames: [ { key: 'dude', frame: 4 } ],
-            frameRate: 20
-        });
-
-        this.anims.create({
-            key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-            frameRate: 10,
-            repeat: -1
-        });
-        
-        //stars
-        this.stars = this.physics.add.group({
-            key: 'star',
-            repeat: 11,
-            setXY: { x: 12, y: 0, stepX: 70 }
-        });
-
-        this.stars.children.iterate(function (child) {
-            child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-        });
-
-        //this.bombs
-        this.bombs = this.physics.add.group();
-
-        //this.score
-        this.scoreText = this.add.text(16, 16, 'this.score: 0', { fontSize: '32px', fill: '#000' });
-
-        //Collider
-        this.physics.add.collider(this.player,this.platforms);
-        this.physics.add.collider(this.stars, this.platforms);
-        this.physics.add.collider(this.bombs, this.platforms);
-        this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
-
-        //Overlaps
-        this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
-
-        //Keyboard setup
-        this.cursors = this.input.keyboard.createCursorKeys();
+        // Exit pointer lock when Q or escape (by default) is pressed.
+        this.input.keyboard.on('keydown_Q', function (event) {
+            if (game.input.mouse.locked) {
+                game.input.mouse.releasePointerLock();
+            }
+        }, 0, this);
     }
 
-    update ()
-    {   
-        if (this.cursors.left.isDown)
-        {
-            this.player.setVelocityX(-160);
+    update (time, delta) {
+        // Rotates player to face towards reticle
+        this.player.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y);
 
-            this.player.anims.play('left', true);
-        }
-        else if (this.cursors.right.isDown)
-        {
-            this.player.setVelocityX(160);
+        // Rotates enemy to face towards player
+        this.enemy.rotation = Phaser.Math.Angle.Between(this.enemy.x, this.enemy.y, this.player.x, this.player.y);
 
-            this.player.anims.play('right', true);
-        }
-        else
-        {
-            this.player.setVelocityX(0);
+        // Make reticle move with player
+        this.reticle.body.velocity.x = this.player.body.velocity.x;
+        this.reticle.body.velocity.y = this.player.body.velocity.y;
 
-            this.player.anims.play('turn');
-        }
+        // Constrain velocity of player
+        this.constrainVelocity(this.player, 500);
 
-        if (this.cursors.up.isDown && this.player.body.touching.down)
-        {
-            this.player.setVelocityY(-330);
+        // Make enemy fire
+        this.enemyFire(this.enemy, this.player, time, this);
+    }
+
+    enemyHitCallback (enemyHit, bulletHit) {
+        // Reduce health of enemy
+        if (bulletHit.active === true && enemyHit.active === true) {
+            enemyHit.health = enemyHit.health - 1;
+            console.log('Enemy hp: ', enemyHit.health);
+
+            // Kill enemy if health <= 0
+            if (enemyHit.health <= 0) {
+                enemyHit.setActive(false).setVisible(false);
+            }
+
+            // Destroy bullet
+            bulletHit.setActive(false).setVisible(false);
         }
     }
 
-    collectStar(player, star)
-    {
-        star.disableBody(true,true);
+    playerHitCallback (playerHit, bulletHit) {
+        // Reduce health of player
+        let scene = playerHit.scene;
 
-        this.score += 10;
-        this.scoreText.setText('this.score: '+ this.score);
+        if (bulletHit.active === true && playerHit.active === true) {
+            playerHit.health = playerHit.health - 1;
+            console.log('Player hp: ', playerHit.health);
 
-        //check if we need to release this.bombs
-        if (this.stars.countActive(true) === 0)
-        {
-            this.stars.children.iterate(function (child) {
+            // Kill hp sprites and kill player if health <= 0
+            if (playerHit.health === 2) {
+                scene.hp3.destroy();
+            }
+            else if (playerHit.health === 1) {
+                scene.hp2.destroy();
+            }
+            else {
+                scene.hp1.destroy();
 
-                child.enableBody(true, child.x, 0, true, true);
+                // Game over state should execute here
+            }
 
-            });
-
-            var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-            var bomb = this.bombs.create(x, 16, 'bomb');
-            bomb.setBounce(1);
-            bomb.setCollideWorldBounds(true);
-            bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-            bomb.allowGravity = false;
-
+            // Destroy bullet
+            bulletHit.setActive(false).setVisible(false);
         }
     }
 
-    hitBomb(player, bomb)
-    {
-        this.physics.pause();
-        this.player.setTint(0xff0000);
-        this.player.anims.play('turn');
-        this.gameOver = true;
+    enemyFire (enemy, player, time, gameObject) {
+        if (enemy.active === false) {
+            return;
+        }
+
+        if ((time - enemy.lastFired) > 1000) {
+            enemy.lastFired = time;
+
+            // Get bullet from bullets group
+            var bullet = this.enemyBullets.get().setActive(true).setVisible(true);
+
+            if (bullet) {
+                bullet.fire(enemy, player);
+
+                // Add collider between bullet and player
+                gameObject.physics.add.collider(player, bullet, this.playerHitCallback);
+            }
+        }
+    }
+
+    // Ensures sprite speed doesnt exceed maxVelocity while update is called
+    constrainVelocity (sprite, maxVelocity) {
+        if (!sprite || !sprite.body) {
+            return;
+        }
+
+        var angle, currVelocitySqr, vx, vy;
+        vx = sprite.body.velocity.x;
+        vy = sprite.body.velocity.y;
+        currVelocitySqr = vx * vx + vy * vy;
+
+        if (currVelocitySqr > maxVelocity * maxVelocity) {
+            angle = Math.atan2(vy, vx);
+            vx = Math.cos(angle) * maxVelocity;
+            vy = Math.sin(angle) * maxVelocity;
+            sprite.body.velocity.x = vx;
+            sprite.body.velocity.y = vy;
+        }
     }
 }
 
-export default GameScene
+export default GameScene;
