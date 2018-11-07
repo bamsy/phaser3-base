@@ -5,8 +5,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, texture, frame) {
         super(scene, x, y, texture, frame);
         scene.physics.world.enable(this);
+        //this.body.setCircle(22);
+        
         scene.add.existing(this);
-
         this.setMovement();
     }
     bulletFireSetup () {
@@ -20,6 +21,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     
             // Get bullet from bullets group
             var bullet = scene.playerBullets.get().setActive(true).setVisible(true);
+            //console.log(bullet)
     
             if (bullet) {
                 bullet.fire(scene.player, scene.reticle);

@@ -5,7 +5,7 @@ class Bullet extends Phaser.GameObjects.Image {
     constructor (scene) {
         super(scene);
         Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
-        this.speed = 1;
+        this.speed = 500;
         this.born = 0;
         this.direction = 0;
         this.xSpeed = 0;
@@ -25,12 +25,16 @@ class Bullet extends Phaser.GameObjects.Image {
 
         // Calculate X and y velocity of bullet to moves it from shooter to target
         if (target.y >= shooter.y) {
-            this.xSpeed = this.speed * Math.sin(this.direction);
-            this.ySpeed = this.speed * Math.cos(this.direction);
+            /*this.xSpeed = this.speed * Math.sin(this.direction);
+            this.ySpeed = this.speed * Math.cos(this.direction);*/
+            this.body.setVelocityX(this.speed * Math.sin(this.direction));
+            this.body.setVelocityY(this.speed * Math.cos(this.direction));
         }
         else {
-            this.xSpeed = -this.speed * Math.sin(this.direction);
-            this.ySpeed = -this.speed * Math.cos(this.direction);
+            this.body.setVelocityX(-this.speed * Math.sin(this.direction));
+            this.body.setVelocityY(-this.speed * Math.cos(this.direction));
+            /*this.xSpeed = -this.speed * Math.sin(this.direction);
+            this.ySpeed = -this.speed * Math.cos(this.direction);*/
         }
 
         this.rotation = shooter.rotation; // angle bullet with shooters rotation

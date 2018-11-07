@@ -79,6 +79,9 @@ class GameScene extends Phaser.Scene {
         // Fires bullet from player on left click of mouse
         this.player.bulletFireSetup();
 
+
+        this.physics.add.collider(this.player, this.enemy);
+
         // Pointer lock will only work after mousedown
         let game = this.game;
         game.canvas.addEventListener('mousedown', function () {
