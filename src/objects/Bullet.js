@@ -5,7 +5,7 @@ class Bullet extends Phaser.GameObjects.Image {
     constructor (scene) {
         super(scene);
         Phaser.GameObjects.Image.call(this, scene, 0, 0, 'bullet');
-        this.speed = 500;
+        this.speed = 1000;
         this.born = 0;
         this.xSpeed = 0;
         this.ySpeed = 0;

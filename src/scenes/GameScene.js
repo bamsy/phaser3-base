@@ -105,7 +105,10 @@ class GameScene extends Phaser.Scene {
         this.constrainVelocity(this.player, 500);
 
         // Make enemy fire
-        this.enemy.moveToTarget(this.player);
+        console.log(this.enemy);
+        if (this.enemy.active) {
+            this.enemy.moveToTarget(this.player);
+        }
     }
 
     enemyHitCallback (enemyHit, bulletHit) {
