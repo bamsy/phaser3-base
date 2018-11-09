@@ -43,14 +43,6 @@ class GameScene extends Phaser.Scene {
         // Add background player, enemy, reticle, healthpoint sprites
         let background = this.add.image(800, 600, 'background');
 
-        /*
-        in an example, the player and enemy are added like this
-        and it makes the player and enemy unable to pass through each other, and they can push each other
-        
-        player = this.physics.add.sprite(800, 600, 'player_handgun');
-        enemy = this.physics.add.sprite(300, 600, 'player_handgun');
-        */
-
         this.player = new Player(this, 800, 600, 'player_handgun');
         this.enemy = new Enemy(this, 300, 600, 'player_handgun');
         this.ball = new Ball(this, 550, 600, 'target');
@@ -82,8 +74,7 @@ class GameScene extends Phaser.Scene {
         // Fires bullet from player on left click of mouse
         this.player.bulletFireSetup();
 
-
-        //this.physics.add.collider(this.player, this.enemy);
+        this.physics.add.collider(this.player, this.enemy);
 
         // Pointer lock will only work after mousedown
         let game = this.game;
@@ -114,7 +105,7 @@ class GameScene extends Phaser.Scene {
         this.constrainVelocity(this.player, 500);
 
         // Make enemy fire
-        this.enemyFire(this.enemy, this.player, time, this);
+        this.enemy.moveToTarget(this.player);
     }
 
     enemyHitCallback (enemyHit, bulletHit) {
@@ -159,9 +150,9 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    ballHitCallback(ballHit, bulletHit){
-        console.log('ball hit')
-       bulletHit.setActive(false).setVisible(false).destroy()
+    ballHitCallback (ballHit, bulletHit) {
+        console.log('ball hit');
+        bulletHit.setActive(false).setVisible(false).destroy();
     }
 
     enemyFire (enemy, player, time, gameObject) {
