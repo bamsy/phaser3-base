@@ -3,6 +3,8 @@ import Player from '../objects/Player';
 import Enemy from '../objects/Enemy';
 import Reticle from '../objects/Reticle';
 import Ball from '../objects/Ball';
+import Spawner from '../objects/Spawner';
+
 
 class GameScene extends Phaser.Scene {
     constructor (test) {
@@ -10,6 +12,7 @@ class GameScene extends Phaser.Scene {
 
         // props
         this.player = null;
+        this.enemySpawner = null;
         this.enemy = null;
         this.healthpoints = null;
         this.reticle = null;
@@ -42,14 +45,15 @@ class GameScene extends Phaser.Scene {
 
         // Add 2 groups for Bullet objects
         this.playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
-        this.enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
+        //this.enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
 
         // Add background player, enemy, reticle, healthpoint sprites
         let background = this.add.image(800, 600, 'background');
 
-        this.player = new Player(this, 1000, 600, 'player_handgun');
+
+        this.player = new Player(this, 800, 600, 'player_handgun');
         this.enemy = new Enemy(this, 300, 600, 'player_handgun');
-        this.ball = new Ball(this, 800, 600, 'target');
+        this.ball = new Ball(this, 550, 600, 'target');
 
         this.reticle = new Reticle(this, 800, 700, 'target');
         this.hp1 = this.add.image(-350, -250, 'target').setScrollFactor(0.5, 0.5);
@@ -60,7 +64,7 @@ class GameScene extends Phaser.Scene {
         background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
         this.ball.setOrigin(0.5, 0.5).setDisplaySize(200, 200).setCollideWorldBounds(true).setDrag(10, 10);
         this.player.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true).setDrag(500, 500);
-        this.enemy.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true).setDrag(500, 500);
+        //this.enemy.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true);
         this.reticle.setOrigin(0.5, 0.5).setDisplaySize(25, 25).setCollideWorldBounds(true);
         this.hp1.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
         this.hp2.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
@@ -68,8 +72,8 @@ class GameScene extends Phaser.Scene {
 
         // Set sprite variables
         this.player.health = 3;
-        this.enemy.health = 3;
-        this.enemy.lastFired = 0;
+        //this.enemy.health = 3;
+        //this.enemy.lastFired = 0;
 
         // Set camera properties
         this.cameras.main.zoom = 0.5;
@@ -101,7 +105,7 @@ class GameScene extends Phaser.Scene {
         this.player.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y);
 
         // Rotates enemy to face towards player
-        this.enemy.rotation = Phaser.Math.Angle.Between(this.enemy.x, this.enemy.y, this.player.x, this.player.y);
+        //this.enemy.rotation = Phaser.Math.Angle.Between(this.enemy.x, this.enemy.y, this.player.x, this.player.y);
 
         // Make reticle move with player
         this.reticle.body.velocity.x = this.player.body.velocity.x;
@@ -116,14 +120,10 @@ class GameScene extends Phaser.Scene {
         if (this.enemy.active) {
             this.enemy.moveToTarget(this.player);
         }
-
-        // this.enemyFire(this.enemy, this.player, time, this);
-
         this.checkGoal();
-
     }
 
-    enemyHitCallback (enemyHit, bulletHit) {
+    /*enemyHitCallback (enemyHit, bulletHit) {
         // Reduce health of enemy
         if (bulletHit.active === true && enemyHit.active === true) {
             enemyHit.health = enemyHit.health - 1;
@@ -137,7 +137,7 @@ class GameScene extends Phaser.Scene {
             // Destroy bullet
             bulletHit.setActive(false).setVisible(false);
         }
-    }
+    }*/
 
     playerHitCallback (playerHit, bulletHit) {
         // Reduce health of player
@@ -169,7 +169,7 @@ class GameScene extends Phaser.Scene {
         bulletHit.setActive(false).setVisible(false).destroy();
     }
 
-    enemyFire (enemy, player, time, gameObject) {
+    /*enemyFire (enemy, player, time, gameObject) {
         if (enemy.active === false) {
             return;
         }
@@ -181,14 +181,14 @@ class GameScene extends Phaser.Scene {
             var bullet = this.enemyBullets.get().setActive(true).setVisible(true);
 
             if (bullet) {
-                bullet.fire(enemy, player);
+                // bullet.fire(enemy, player);
 
-                // Add collider between bullet and player
+                Add collider between bullet and player
                 gameObject.physics.add.collider(player, bullet, this.playerHitCallback);
                 gameObject.physics.add.collider(this.ball, bullet, this.ballHitCallback);
             }
         }
-    }
+    } */
 
     // Ensures sprite speed doesnt exceed maxVelocity while update is called
     constrainVelocity (sprite, maxVelocity) {
