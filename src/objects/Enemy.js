@@ -9,7 +9,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     moveToTarget (target) {
-        console.log('moving towards: ' + target);
+        //console.log('moving towards: ' + target);
         let speed = 150;
         let direction = Math.atan((target.x - this.x) / (target.y - this.y));
 
