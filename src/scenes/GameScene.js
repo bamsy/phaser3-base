@@ -19,6 +19,10 @@ class GameScene extends Phaser.Scene {
         this.hp1 = null;
         this.hp2 = null;
         this.hp3 = null;
+        this.worldX = 1600;
+        this.worldY = 1200;
+        this.leftGoals = 0;
+        this.rightGoals = 0;
     }
 
     preload () {
@@ -34,7 +38,7 @@ class GameScene extends Phaser.Scene {
 
     create () {
         // Set world bounds
-        this.physics.world.setBounds(0, 0, 1600, 1200);
+        this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
 
         // Add 2 groups for Bullet objects
         this.playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
@@ -43,17 +47,9 @@ class GameScene extends Phaser.Scene {
         // Add background player, enemy, reticle, healthpoint sprites
         let background = this.add.image(800, 600, 'background');
 
-        /*
-        in an example, the player and enemy are added like this
-        and it makes the player and enemy unable to pass through each other, and they can push each other
-        
-        player = this.physics.add.sprite(800, 600, 'player_handgun');
-        enemy = this.physics.add.sprite(300, 600, 'player_handgun');
-        */
-
-        this.player = new Player(this, 800, 600, 'player_handgun');
+        this.player = new Player(this, 1000, 600, 'player_handgun');
         this.enemy = new Enemy(this, 300, 600, 'player_handgun');
-        this.ball = new Ball(this, 550, 600, 'target');
+        this.ball = new Ball(this, 800, 600, 'target');
 
         this.reticle = new Reticle(this, 800, 700, 'target');
         this.hp1 = this.add.image(-350, -250, 'target').setScrollFactor(0.5, 0.5);
@@ -61,7 +57,7 @@ class GameScene extends Phaser.Scene {
         this.hp3 = this.add.image(-250, -250, 'target').setScrollFactor(0.5, 0.5);
 
         // Set image/sprite properties
-        background.setOrigin(0.5, 0.5).setDisplaySize(1600, 1200);
+        background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
         this.ball.setOrigin(0.5, 0.5).setDisplaySize(200, 200).setCollideWorldBounds(true).setDrag(10, 10);
         this.player.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true).setDrag(500, 500);
         this.enemy.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true).setDrag(500, 500);
@@ -82,8 +78,7 @@ class GameScene extends Phaser.Scene {
         // Fires bullet from player on left click of mouse
         this.player.bulletFireSetup();
 
-
-        //this.physics.add.collider(this.player, this.enemy);
+        this.physics.add.collider(this.player, this.ball);
 
         // Pointer lock will only work after mousedown
         let game = this.game;
@@ -114,7 +109,9 @@ class GameScene extends Phaser.Scene {
         this.constrainVelocity(this.player, 500);
 
         // Make enemy fire
-        this.enemyFire(this.enemy, this.player, time, this);
+        // this.enemyFire(this.enemy, this.player, time, this);
+
+        this.checkGoal();
     }
 
     enemyHitCallback (enemyHit, bulletHit) {
@@ -159,9 +156,8 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    ballHitCallback(ballHit, bulletHit){
-        console.log('ball hit')
-       bulletHit.setActive(false).setVisible(false).destroy()
+    ballHitCallback (ballHit, bulletHit) {
+        bulletHit.setActive(false).setVisible(false).destroy();
     }
 
     enemyFire (enemy, player, time, gameObject) {
@@ -203,6 +199,36 @@ class GameScene extends Phaser.Scene {
             sprite.body.velocity.x = vx;
             sprite.body.velocity.y = vy;
         }
+    }
+
+    checkGoal () {
+        // just for now, the net starts 200 pixels below the top of the world,
+        // and ends 200 pixels above the top of the world
+
+        if (this.ball.body.top >= 400 && this.ball.body.bottom <= (this.worldY - 400)) {
+            if (this.ball.body.left <= this.physics.world.bounds.left) {
+                this.goalScored(true);
+            }
+            else if (this.ball.body.right >= this.physics.world.bounds.right) {
+                this.goalScored(false);
+            }
+        }
+    }
+
+    goalScored (isLeft) {
+        if (isLeft) {
+            this.leftGoals++;
+            console.log('LEFT SCORE! ' + this.leftGoals);
+        }
+        else {
+            this.rightGoals++;
+            console.log('RIGHT SCORE! ' + this.rightGoals);
+        }
+
+        this.ball.setVelocityX(0);
+        this.ball.setVelocityY(0);
+        this.ball.setX(800);
+        this.ball.setY(600);
     }
 }
 
