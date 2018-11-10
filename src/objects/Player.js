@@ -18,7 +18,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             if (scene.player.active === false) {
                 return;
             }
-    
+
             // Get bullet from bullets group
             var bullet = scene.playerBullets.get().setActive(true).setVisible(true);
 
