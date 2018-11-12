@@ -49,8 +49,17 @@ class GameScene extends Phaser.Scene {
         this.player = new Player(this, 800, 600, 'player_handgun');
 
         // this.enemy = new Enemy(this, 300, 600, 'player_handgun');
+        // create a list and spawner for enemies
         this.enemies = [];
-        this.enemies.push(Enemy.spawn(this, 300, 600, 'player_handgun'));
+
+        let spawnerOptions = {
+            lowerInterval: 2500,
+            upperInterval: 5000,
+            enabled: true,
+            maxObjects: 3
+        };
+
+        this.enemySpawner = new Spawner(Enemy, this.enemies, this, 300, 600, 'player_handgun', spawnerOptions);
 
         this.ball = new Ball(this, 550, 600, 'target');
 
@@ -113,13 +122,15 @@ class GameScene extends Phaser.Scene {
             },
             {
                 target: this.ball,
-                callback: this.ball
+                callback: this.ballHitCallback
             }
         ];
 
         this.enemies.forEach(enemy => {
             enemy.update(this.player, time, collisionObjects);
         });
+
+        this.enemySpawner.spawn(time);
     }
 
     playerHitCallback (playerHit, bulletHit) {

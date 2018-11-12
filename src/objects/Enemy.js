@@ -55,7 +55,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
                 if (collisionObjects) {
                     collisionObjects.target
                         ? gameObject.physics.add.collider(collisionObjects.target, bullet, collisionObjects.callback)
-                        : collisionObjects.array.forEach(collisionObject => {
+                        : collisionObjects.forEach(collisionObject => {
                             gameObject.physics.add.collider(collisionObject.target, bullet, collisionObject.callback);
                         });
                 }

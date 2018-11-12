@@ -3,13 +3,43 @@
  * http://www.html5gamedevs.com/topic/21724-spawning-enemies-at-random-period/
  */
 class Spawner {
-    constructor (entity, spawnerEnabled) {
+    constructor (entity, entities, scene, x, y, texture, options) {
         this.entity = entity;
-        this.spawnerEnabled = spawnerEnabled;
-    }
+        this.entities = entities;
+        this.scene = scene;
+        this.x = x || 0;
+        this.y = y || 0;
+        this.texture = texture;
+        this.enabled = options.enabled;
+        this.lowerInterval = options.lowerInterval;
+        this.upperInterval = options.upperInterval;
+        this.maxObjects = options.maxObjects || 15;
+        this.lastSpawn = 0;
 
-    //took this from player, we need to set collision in the spawn function of the spawnable obj
-    // scene.physics.add.collider(scene.enemy, bullet, scene.enemyHitCallback);
+        if (!this.lowerInterval) {
+            this.lowerInterval = this.upperInterval || 5000;
+        }
+
+        if (!this.upperInterval) {
+            this.upperInterval = this.lowerInterval;
+        }
+
+        if (!entity.spawn || typeof entity.spawn !== 'function') {
+            throw new Error('Entity must have a function called spawn to handle spawning logic');
+        }
+    }w
+
+    spawn (time) {
+        let interval = Math.floor(Math.random() * (this.upperInterval - this.lowerInterval + 1)) + this.lowerInterval;
+
+        if (this.enabled && this.entities.length < this.maxObjects && (time - this.lastSpawn) > interval) {
+            console.log('spawning');
+
+            this.lastSpawn = time;
+
+            this.entities.push(this.entity.spawn(this.scene, this.x, this.y, this.texture));
+        }
+    }
 }
 
 export default Spawner;
