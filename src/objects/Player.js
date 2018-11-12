@@ -26,7 +26,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     
             if (bullet) {
                 bullet.fire(scene.player, scene.reticle);
-                scene.physics.add.collider(scene.enemy, bullet, scene.enemyHitCallback);
+                // scene.physics.add.collider(scene.enemy, bullet, scene.enemyHitCallback);
                 scene.physics.add.collider(scene.ball, bullet, scene.ballHitCallback);
             }
         }, scene);
