@@ -9,6 +9,10 @@ class Ball extends Phaser.Physics.Arcade.Sprite {
         this.body.setCircle(40);
         this.body.setBounce(0.8);
     }
+
+    ballHitCallback (ballHit, bulletHit) {
+        bulletHit.setActive(false).setVisible(false).destroy();
+    }
 }
 
 export default Ball;

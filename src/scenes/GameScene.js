@@ -3,6 +3,7 @@ import Player from '../objects/Player';
 import Enemy from '../objects/Enemy';
 import Reticle from '../objects/Reticle';
 import Ball from '../objects/Ball';
+import Spawner from '../objects/Spawner';
 
 class GameScene extends Phaser.Scene {
     constructor (test) {
@@ -10,6 +11,7 @@ class GameScene extends Phaser.Scene {
 
         // props
         this.player = null;
+        this.ball = null;
         this.enemySpawner = null;
         this.enemies = null;
         this.healthpoints = null;
@@ -46,12 +48,11 @@ class GameScene extends Phaser.Scene {
 
         this.enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
 
-        // Add background player, enemy, reticle, healthpoint sprites
+        // Add background player, reticle, healthpoint sprites
         let background = this.add.image(800, 600, 'background');
 
         this.player = new Player(this, 800, 600, 'player_handgun');
 
-        // this.enemy = new Enemy(this, 300, 600, 'player_handgun');
         // create a list and spawner for enemies
         this.enemies = [];
 
@@ -62,7 +63,9 @@ class GameScene extends Phaser.Scene {
             maxObjects: 3
         };
 
-        this.enemySpawner = new Spawner(Enemy, this.enemies, this, 300, 600, 'player_handgun', spawnerOptions);
+        let spawnOptions = { collisionTarget: this.player };
+
+        this.enemySpawner = new Spawner(Enemy, this.enemies, this, 300, 600, 'player_handgun', spawnerOptions, spawnOptions);
 
         this.ball = new Ball(this, 550, 600, 'target');
 
@@ -84,16 +87,12 @@ class GameScene extends Phaser.Scene {
         // Set sprite variables
         this.player.health = 3;
 
-        this.enemy.health = 3;
-
         // Set camera properties
         this.cameras.main.zoom = 0.5;
         this.cameras.main.startFollow(this.player);
 
         // Fires bullet from player on left click of mouse
         this.player.bulletFireSetup();
-
-        // this.physics.add.collider(this.player, this.enemy);
 
         // Pointer lock will only work after mousedown
         let game = this.game;
@@ -120,52 +119,11 @@ class GameScene extends Phaser.Scene {
         // Constrain velocity of player
         this.constrainVelocity(this.player, 500);
 
-        let collisionObjects = [
-            {
-                target: this.player,
-                callback: this.playerHitCallback
-            },
-            {
-                target: this.ball,
-                callback: this.ballHitCallback
-            }
-        ];
-
         this.enemies.forEach(enemy => {
-            enemy.update(this.player, time, collisionObjects);
+            enemy.update(this.player, time);
         });
 
         this.enemySpawner.spawn(time);
-    }
-
-    playerHitCallback (playerHit, bulletHit) {
-        // Reduce health of player
-        let scene = playerHit.scene;
-
-        if (bulletHit.active === true && playerHit.active === true) {
-            playerHit.health = playerHit.health - 1;
-            console.log('Player hp: ', playerHit.health);
-
-            // Kill hp sprites and kill player if health <= 0
-            if (playerHit.health === 2) {
-                scene.hp3.destroy();
-            }
-            else if (playerHit.health === 1) {
-                scene.hp2.destroy();
-            }
-            else {
-                scene.hp1.destroy();
-
-                // Game over state should execute here
-            }
-
-            // Destroy bullet
-            bulletHit.setActive(false).setVisible(false);
-        }
-    }
-
-    ballHitCallback (ballHit, bulletHit) {
-        bulletHit.setActive(false).setVisible(false).destroy();
     }
 
     // Ensures sprite speed doesnt exceed maxVelocity while update is called

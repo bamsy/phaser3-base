@@ -1,3 +1,5 @@
+import { addCollisions } from '../common/Utilities';
+
 /**
  * Base class for an enemy
  */
@@ -12,7 +14,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     moveToTarget (target) {
-        //console.log('moving towards: ' + target);
+        // console.log('moving towards: ' + target);
         let speed = 150;
         let direction = Math.atan((target.x - this.x) / (target.y - this.y));
 
@@ -27,17 +29,21 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    static spawn (scene, x, y, texture, frame) {
+    static spawn (options, scene, x, y, texture, frame) {
         let enemy = new Enemy(scene, x, y, texture, frame);
         
         enemy.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true);
 
-        enemy.health = 3;
+        enemy.health = options.health || 3;
+
+        if (options.collisionTarget) {
+            scene.physics.add.collider(options.collisionTarget, enemy);
+        }
         
         return enemy;
     }
 
-    enemyFire (target, time, gameObject, collisionObjects) {
+    enemyFire (target, time, scene) {
         if (this.active === false) {
             return;
         }
@@ -51,35 +57,46 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             if (bullet) {
                 bullet.fire(this, target);
 
-                // add collisions with specified callbacks
-                if (collisionObjects) {
-                    collisionObjects.target
-                        ? gameObject.physics.add.collider(collisionObjects.target, bullet, collisionObjects.callback)
-                        : collisionObjects.forEach(collisionObject => {
-                            gameObject.physics.add.collider(collisionObject.target, bullet, collisionObject.callback);
-                        });
-                }
+                // add collisions
+                let collisionObjects = [
+                    {
+                        target: scene.player,
+                        callback: scene.player.playerHitCallback
+                    },
+                    {
+                        target: scene.ball,
+                        callback: scene.ball.ballHitCallback
+                    }
+                ];
+
+                addCollisions(collisionObjects);
             }
         }
     }
 
-    damageEnemy (enemyHit, bulletHit) {
+    enemyHitCallback (enemy, bulletHit) {
         // Reduce health of enemy
-        if (bulletHit.active === true && enemyHit.active === true) {
-            enemyHit.health = enemyHit.health - 1;
-            console.log('Enemy hp: ', enemyHit.health);
-
-            // Kill enemy if health <= 0
-            if (enemyHit.health <= 0) {
-                enemyHit.setActive(false).setVisible(false);
-            }
+        if (bulletHit.active === true && enemy.active === true) {
+            enemy.health -= 1;
+            console.log('Enemy hp: ', enemy.health);
 
             // Destroy bullet
             bulletHit.setActive(false).setVisible(false);
+
+            // Kill enemy if health <= 0
+            if (enemy.health <= 0) {
+                enemy.setActive(false).setVisible(false);
+
+                // mark for removal
+                enemy.destroyed = true;
+
+                // eco friendly
+                enemy.destroy();
+            }
         }
     }
 
-    update (target, time, collisionObjects) {
+    update (target, time) {
         // Rotates enemy to face towards target
         this.rotation = Phaser.Math.Angle.Between(this.x, this.y, target.x, target.y);
 
@@ -88,7 +105,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.moveToTarget(target);
         }
 
-        this.enemyFire(target, time, this.scene, collisionObjects);
+        this.enemyFire(target, time, this.scene);
     }
 }
 
