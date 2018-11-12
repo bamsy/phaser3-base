@@ -3,7 +3,6 @@ import Player from '../objects/Player';
 import Enemy from '../objects/Enemy';
 import Reticle from '../objects/Reticle';
 import Ball from '../objects/Ball';
-import Spawner from '../objects/Spawner';
 
 class GameScene extends Phaser.Scene {
     constructor (test) {
@@ -21,6 +20,10 @@ class GameScene extends Phaser.Scene {
         this.hp1 = null;
         this.hp2 = null;
         this.hp3 = null;
+        this.worldX = 1600;
+        this.worldY = 1200;
+        this.leftGoals = 0;
+        this.rightGoals = 0;
     }
 
     preload () {
@@ -36,7 +39,7 @@ class GameScene extends Phaser.Scene {
 
     create () {
         // Set world bounds
-        this.physics.world.setBounds(0, 0, 1600, 1200);
+        this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
 
         // Add 2 groups for Bullet objects
         this.playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
@@ -69,7 +72,7 @@ class GameScene extends Phaser.Scene {
         this.hp3 = this.add.image(-250, -250, 'target').setScrollFactor(0.5, 0.5);
 
         // Set image/sprite properties
-        background.setOrigin(0.5, 0.5).setDisplaySize(1600, 1200);
+        background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
         this.ball.setOrigin(0.5, 0.5).setDisplaySize(200, 200).setCollideWorldBounds(true).setDrag(10, 10);
         this.player.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true).setDrag(500, 500);
 
@@ -80,6 +83,8 @@ class GameScene extends Phaser.Scene {
 
         // Set sprite variables
         this.player.health = 3;
+
+        this.enemy.health = 3;
 
         // Set camera properties
         this.cameras.main.zoom = 0.5;
@@ -160,7 +165,6 @@ class GameScene extends Phaser.Scene {
     }
 
     ballHitCallback (ballHit, bulletHit) {
-        console.log('ball hit');
         bulletHit.setActive(false).setVisible(false).destroy();
     }
 
@@ -182,6 +186,36 @@ class GameScene extends Phaser.Scene {
             sprite.body.velocity.x = vx;
             sprite.body.velocity.y = vy;
         }
+    }
+
+    checkGoal () {
+        // just for now, the net starts 200 pixels below the top of the world,
+        // and ends 200 pixels above the top of the world
+
+        if (this.ball.body.top >= 400 && this.ball.body.bottom <= (this.worldY - 400)) {
+            if (this.ball.body.left <= this.physics.world.bounds.left) {
+                this.goalScored(true);
+            }
+            else if (this.ball.body.right >= this.physics.world.bounds.right) {
+                this.goalScored(false);
+            }
+        }
+    }
+
+    goalScored (isLeft) {
+        if (isLeft) {
+            this.leftGoals++;
+            console.log('LEFT SCORE! ' + this.leftGoals);
+        }
+        else {
+            this.rightGoals++;
+            console.log('RIGHT SCORE! ' + this.rightGoals);
+        }
+
+        this.ball.setVelocityX(0);
+        this.ball.setVelocityY(0);
+        this.ball.setX(800);
+        this.ball.setY(600);
     }
 }
 

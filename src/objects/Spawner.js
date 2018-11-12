@@ -1,6 +1,5 @@
 /**
  * Base Class for a Spawner
- * http://www.html5gamedevs.com/topic/21724-spawning-enemies-at-random-period/
  */
 class Spawner {
     constructor (entity, entities, scene, x, y, texture, options) {
@@ -27,7 +26,7 @@ class Spawner {
         if (!entity.spawn || typeof entity.spawn !== 'function') {
             throw new Error('Entity must have a function called spawn to handle spawning logic');
         }
-    }w
+    }
 
     spawn (time) {
         let interval = Math.floor(Math.random() * (this.upperInterval - this.lowerInterval + 1)) + this.lowerInterval;
