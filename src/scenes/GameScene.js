@@ -6,8 +6,10 @@ import Ball from '../objects/Ball';
 import Spawner from '../objects/Spawner'
 
 class GameScene extends Phaser.Scene {
-    constructor (test) {
-        super({ key: 'GameScene' });
+    constructor(test) {
+        super({
+            key: 'GameScene'
+        });
 
         // props
         this.player = null;
@@ -26,32 +28,60 @@ class GameScene extends Phaser.Scene {
         this.worldY = 1200;
         this.leftGoals = 0;
         this.rightGoals = 0;
+        this.weapon = null
     }
 
-    preload () {
+    preload() {
         // Load in images and sprites
-        this.load.spritesheet('player_handgun', 'assets/images/sprites/player_handgun.png', { frameWidth: 66, frameHeight: 60 });
+        this.load.spritesheet('player_handgun', 'assets/images/sprites/player_handgun.png', {
+            frameWidth: 66,
+            frameHeight: 60
+        });
         this.load.image('bullet', 'assets/images/sprites/bullet6.png');
         this.load.image('target', 'assets/images/demoscene/ball.png');
         this.load.image('background', 'assets/images/skies/underwater1.png');
         this.load.image('gunfire', 'assets/images/sprites/fire1_01.png');
         this.load.audio('pistol', 'assets/sounds/pistol.mp3');
         this.load.audio('shotgun', 'assets/sounds/shotgun.mp3');
+        this.load.scenePlugin('WeaponPlugin', '../node_modules/phaser3-weapon-plugin/dist/WeaponPlugin.js', null, 'weapons');
     }
 
-    create () {
+    create() {
         // Set world bounds
         this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
 
-        // Add 2 groups for Bullet objects
-        this.playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
-
-        this.enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
-
         // Add background player, reticle, healthpoint sprites
         let background = this.add.image(800, 600, 'background');
+        // Set image/sprite properties
+        background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
+
+        //  Creates 30 bullets, using the 'bullet' graphic
+        this.weapon = this.weapons.add(30, 'bullet');
+        this.weapon.debugPhysics = true
+        this.weapon.bulletKillType = WeaponPlugin.consts.KILL_WORLD_BOUNDS;
+        this.weapon.bulletLifespan = 500
+
+        //  The speed at which the bullet is fired
+        this.weapon.bulletSpeed = 600;
+
+        //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
+        this.weapon.fireRate = 100;
+
+        // Add 2 groups for Bullet objects
+        this.playerBullets = this.physics.add.group({
+            classType: Bullet,
+            runChildUpdate: true
+        });
+
+        this.enemyBullets = this.physics.add.group({
+            classType: Bullet,
+            runChildUpdate: true
+        });
 
         this.player = new Player(this, 800, 600, 'player_handgun');
+        // this.player = this.add.sprite(800,600, 'player_handgun')
+        this.physics.add.existing(this.player);
+        this.weapon.trackSprite(this.player, 0, 0, true);
 
         // create a list and spawner for enemies
         this.enemies = [];
@@ -63,7 +93,9 @@ class GameScene extends Phaser.Scene {
             maxObjects: 3
         };
 
-        let spawnOptions = { collisionTarget: this.player };
+        let spawnOptions = {
+            collisionTarget: this.player
+        };
 
         this.enemySpawner = new Spawner(Enemy, this.enemies, this, 300, 600, 'player_handgun', spawnerOptions, spawnOptions);
 
@@ -74,8 +106,6 @@ class GameScene extends Phaser.Scene {
         this.hp2 = this.add.image(-300, -250, 'target').setScrollFactor(0.5, 0.5);
         this.hp3 = this.add.image(-250, -250, 'target').setScrollFactor(0.5, 0.5);
 
-        // Set image/sprite properties
-        background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
         this.ball.setOrigin(0.5, 0.5).setDisplaySize(200, 200).setCollideWorldBounds(true).setDrag(10, 10);
         this.player.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true).setDrag(500, 500);
 
@@ -92,7 +122,7 @@ class GameScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.player);
 
         // Fires bullet from player on left click of mouse
-        this.player.bulletFireSetup();
+        // this.player.bulletFireSetup();
 
         // Pointer lock will only work after mousedown
         let game = this.game;
@@ -106,15 +136,21 @@ class GameScene extends Phaser.Scene {
                 game.input.mouse.releasePointerLock();
             }
         }, 0, this);
+        this.cursors = this.input.keyboard.createCursorKeys();
     }
 
-    update (time, delta) {
+    update(time, delta) {
         // Rotates player to face towards reticle
         this.player.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y);
 
         // Make reticle move with player
         this.reticle.body.velocity.x = this.player.body.velocity.x;
         this.reticle.body.velocity.y = this.player.body.velocity.y;
+        
+        if (this.input.activePointer.isDown) {
+            console.log('hi')
+            this.weapon.fire()
+        }
 
         // Constrain velocity of player
         this.constrainVelocity(this.player, 500);
@@ -128,7 +164,7 @@ class GameScene extends Phaser.Scene {
     }
 
     // Ensures sprite speed doesnt exceed maxVelocity while update is called
-    constrainVelocity (sprite, maxVelocity) {
+    constrainVelocity(sprite, maxVelocity) {
         if (!sprite || !sprite.body) {
             return;
         }
@@ -147,26 +183,24 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    checkGoal () {
+    checkGoal() {
         // just for now, the net starts 200 pixels below the top of the world,
         // and ends 200 pixels above the top of the world
 
         if (this.ball.body.top >= 400 && this.ball.body.bottom <= (this.worldY - 400)) {
             if (this.ball.body.left <= this.physics.world.bounds.left) {
                 this.goalScored(true);
-            }
-            else if (this.ball.body.right >= this.physics.world.bounds.right) {
+            } else if (this.ball.body.right >= this.physics.world.bounds.right) {
                 this.goalScored(false);
             }
         }
     }
 
-    goalScored (isLeft) {
+    goalScored(isLeft) {
         if (isLeft) {
             this.leftGoals++;
             console.log('LEFT SCORE! ' + this.leftGoals);
-        }
-        else {
+        } else {
             this.rightGoals++;
             console.log('RIGHT SCORE! ' + this.rightGoals);
         }
