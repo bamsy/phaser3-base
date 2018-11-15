@@ -1,3 +1,5 @@
+import { addCollisions } from '../common/Utilities';
+
 /**
  * Base class for a Player
  */
@@ -9,6 +11,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         this.setMovement();
     }
+
     bulletFireSetup () {
         let scene = this.scene;
 
@@ -25,11 +28,27 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     
             if (bullet) {
                 bullet.fire(scene.player, scene.reticle);
-                scene.physics.add.collider(scene.enemy, bullet, scene.enemyHitCallback);
-                scene.physics.add.collider(scene.ball, bullet, scene.ballHitCallback);
+
+                // add collisions
+                let collisionObjects = [
+                    {
+                        target: scene.ball,
+                        callback: scene.ball.ballHitCallback
+                    }
+                ];
+
+                scene.enemies.forEach(enemy => {
+                    collisionObjects.push({
+                        target: enemy,
+                        callback: enemy.enemyHitCallback
+                    });
+                });
+
+                addCollisions(scene, bullet, collisionObjects);
             }
         }, scene);
     }
+
     setMovement () {
         // Assign this to a variable so we can use it.
         let player = this;
@@ -77,6 +96,32 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 player.setAccelerationX(0);
             }
         });
+    }
+
+    playerHitCallback (playerHit, bulletHit) {
+        // Reduce health of player
+        let scene = playerHit.scene;
+
+        if (bulletHit.active === true && playerHit.active === true) {
+            playerHit.health = playerHit.health - 1;
+            console.log('Player hp: ', playerHit.health);
+
+            // Kill hp sprites and kill player if health <= 0
+            if (playerHit.health === 2) {
+                scene.hp3.destroy();
+            }
+            else if (playerHit.health === 1) {
+                scene.hp2.destroy();
+            }
+            else {
+                scene.hp1.destroy();
+
+                // Game over state should execute here
+            }
+
+            // Destroy bullet
+            bulletHit.setActive(false).setVisible(false);
+        }
     }
 }
 
