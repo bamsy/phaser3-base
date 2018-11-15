@@ -11,7 +11,8 @@ class Ball extends Phaser.Physics.Arcade.Sprite {
     }
 
     ballHitCallback (ballHit, bulletHit) {
-        bulletHit.setActive(false).setVisible(false).destroy();
+        // bulletHit.setActive(false).setVisible(false).destroy();
+        bulletHit.kill()
     }
 }
 

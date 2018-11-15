@@ -19,7 +19,6 @@ class GameScene extends Phaser.Scene {
         this.healthpoints = null;
         this.reticle = null;
         this.moveKeys = null;
-        this.playerBullets = null;
         this.enemyBullets = null;
         this.hp1 = null;
         this.hp2 = null;
@@ -68,11 +67,6 @@ class GameScene extends Phaser.Scene {
         this.weapon.fireRate = 100;
 
         // Add 2 groups for Bullet objects
-        this.playerBullets = this.physics.add.group({
-            classType: Bullet,
-            runChildUpdate: true
-        });
-
         this.enemyBullets = this.physics.add.group({
             classType: Bullet,
             runChildUpdate: true
@@ -140,15 +134,16 @@ class GameScene extends Phaser.Scene {
     }
 
     update(time, delta) {
+        // Check for bullet collision with ball
+        this.physics.overlap(this.ball,this.weapon.bullets,this.ball.ballHitCallback,null,this)
+
         // Rotates player to face towards reticle
         this.player.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y);
-
         // Make reticle move with player
         this.reticle.body.velocity.x = this.player.body.velocity.x;
         this.reticle.body.velocity.y = this.player.body.velocity.y;
         
         if (this.input.activePointer.isDown) {
-            console.log('hi')
             this.weapon.fire()
         }
 
