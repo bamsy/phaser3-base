@@ -2,6 +2,7 @@ import 'phaser';
 import BootScene from './scenes/BootScene';
 import TitleScene from './scenes/TitleScene';
 import GameScene from './scenes/GameScene';
+import {Plugin as WeaponPlugin} from 'phaser3-weapon-plugin'
 
 var config = {
     type: Phaser.WEBGL,
@@ -11,8 +12,12 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 0, x: 0 },
-            debug: false
+            debug: true
         }
+
+    },
+    plugins: {
+        global: [WeaponPlugin],
     },
     scene: [
         BootScene,
