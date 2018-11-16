@@ -3,6 +3,7 @@ import Player from '../objects/Player';
 import Enemy from '../objects/Enemy';
 import Reticle from '../objects/Reticle';
 import Ball from '../objects/Ball';
+import Spawner from '../objects/Spawner'
 
 class GameScene extends Phaser.Scene {
     constructor (test) {
@@ -85,8 +86,6 @@ class GameScene extends Phaser.Scene {
 
         // Set sprite variables
         this.player.health = 3;
-
-        this.enemy.health = 3;
 
         // Set camera properties
         this.cameras.main.zoom = 0.5;
