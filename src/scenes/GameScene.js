@@ -163,7 +163,7 @@ class GameScene extends Phaser.Scene {
         if (!sprite || !sprite.body) {
             return;
         }
-
+        
         var angle, currVelocitySqr, vx, vy;
         vx = sprite.body.velocity.x;
         vy = sprite.body.velocity.y;
