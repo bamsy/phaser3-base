@@ -32,7 +32,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     static spawn (options, scene, x, y, texture, frame) {
         let enemy = new Enemy(scene, x, y, texture, frame);
         
-        enemy.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true);
+        enemy.setOrigin(0.5, 0.5).setDisplaySize(137.67, 110.67).setCollideWorldBounds(true);
 
         enemy.health = options.health || 3;
 

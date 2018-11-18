@@ -3,7 +3,7 @@ import Player from '../objects/Player';
 import Enemy from '../objects/Enemy';
 import Reticle from '../objects/Reticle';
 import Ball from '../objects/Ball';
-import Spawner from '../objects/Spawner'
+import Spawner from '../objects/Spawner';
 
 class GameScene extends Phaser.Scene {
     constructor (test) {
@@ -30,16 +30,28 @@ class GameScene extends Phaser.Scene {
 
     preload () {
         // Load in images and sprites
-        this.load.spritesheet('player_handgun', 'assets/images/sprites/player_handgun.png', { frameWidth: 66, frameHeight: 60 });
+        let basePlayerFolder = 'assets/images/sprites/tds-player-sprites/Characters/PNG_Bodyparts&Animations/PNG_Animations/Man/Walk_gun';
+        this.load.image('player_handgun', basePlayerFolder + '/Walk_gun_000.png');
         this.load.image('bullet', 'assets/images/sprites/bullet6.png');
         this.load.image('target', 'assets/images/demoscene/ball.png');
         this.load.image('background', 'assets/images/skies/underwater1.png');
         this.load.image('gunfire', 'assets/images/sprites/fire1_01.png');
         this.load.audio('pistol', 'assets/sounds/pistol.mp3');
         this.load.audio('shotgun', 'assets/sounds/shotgun.mp3');
+
+        // Player sprite sheet - walking with gun
+        this.load.image('walk_gun0', basePlayerFolder + '/Walk_gun_000.png');
+        this.load.image('walk_gun1', basePlayerFolder + '/Walk_gun_001.png');
+        this.load.image('walk_gun2', basePlayerFolder + '/Walk_gun_002.png');
+        this.load.image('walk_gun3', basePlayerFolder + '/Walk_gun_003.png');
+        this.load.image('walk_gun4', basePlayerFolder + '/Walk_gun_004.png');
+        this.load.image('walk_gun5', basePlayerFolder + '/Walk_gun_005.png');
     }
 
     create () {
+        // create animations
+        this.createAnimations();
+
         // Set world bounds
         this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
 
@@ -69,7 +81,7 @@ class GameScene extends Phaser.Scene {
 
         this.ball = new Ball(this, 550, 600, 'target');
 
-        this.reticle = new Reticle(this, 800, 700, 'target');
+        this.reticle = new Reticle(this, 1000, 600, 'target');
         this.hp1 = this.add.image(-350, -250, 'target').setScrollFactor(0.5, 0.5);
         this.hp2 = this.add.image(-300, -250, 'target').setScrollFactor(0.5, 0.5);
         this.hp3 = this.add.image(-250, -250, 'target').setScrollFactor(0.5, 0.5);
@@ -77,8 +89,7 @@ class GameScene extends Phaser.Scene {
         // Set image/sprite properties
         background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
         this.ball.setOrigin(0.5, 0.5).setDisplaySize(200, 200).setCollideWorldBounds(true).setDrag(10, 10);
-        this.player.setOrigin(0.5, 0.5).setDisplaySize(132, 120).setCollideWorldBounds(true).setDrag(500, 500);
-
+        this.player.setOrigin(0.5, 0.5).setDisplaySize(137.67, 110.67).setCollideWorldBounds(true).setDrag(500, 500);
         this.reticle.setOrigin(0.5, 0.5).setDisplaySize(25, 25).setCollideWorldBounds(true);
         this.hp1.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
         this.hp2.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
@@ -111,6 +122,15 @@ class GameScene extends Phaser.Scene {
     update (time, delta) {
         // Rotates player to face towards reticle
         this.player.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y);
+
+        // animate the player if they are moving
+        // stop the animation when they aren't
+        if (this.player.body.acceleration.x !== 0 || this.player.body.acceleration.y !== 0) {
+            this.player.walkWithGun(true);
+        }
+        else {
+            this.player.walkWithGun(false);
+        }
 
         // Make reticle move with player
         this.reticle.body.velocity.x = this.player.body.velocity.x;
@@ -175,6 +195,23 @@ class GameScene extends Phaser.Scene {
         this.ball.setVelocityY(0);
         this.ball.setX(800);
         this.ball.setY(600);
+    }
+
+    // Create all animations for our scene here for now.
+    createAnimations () {
+        this.anims.create({
+            key: 'player_walk_gun',
+            frames: [
+                { key: 'walk_gun0' },
+                { key: 'walk_gun1' },
+                { key: 'walk_gun2' },
+                { key: 'walk_gun3' },
+                { key: 'walk_gun4' },
+                { key: 'walk_gun5' }
+            ],
+            frameRate: 8,
+            repeat: -1
+        });
     }
 }
 
