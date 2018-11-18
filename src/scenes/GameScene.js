@@ -18,7 +18,6 @@ class GameScene extends Phaser.Scene {
         this.reticle = null;
         this.moveKeys = null;
         this.playerBullets = null;
-        this.enemyBullets = null;
         this.hp1 = null;
         this.hp2 = null;
         this.hp3 = null;
@@ -31,7 +30,8 @@ class GameScene extends Phaser.Scene {
     preload () {
         // Load in images and sprites
         let basePlayerFolder = 'assets/images/sprites/tds-player-sprites/Characters/PNG_Bodyparts&Animations/PNG_Animations/Man/Walk_gun';
-        this.load.image('player_handgun', basePlayerFolder + '/Walk_gun_000.png');
+        let baseZombie3Folder = 'assets/images/sprites/Zombies/PNGAnimations/1LVL/Zombie3_male/Walk/';
+
         this.load.image('bullet', 'assets/images/sprites/bullet6.png');
         this.load.image('target', 'assets/images/demoscene/ball.png');
         this.load.image('background', 'assets/images/skies/underwater1.png');
@@ -40,12 +40,29 @@ class GameScene extends Phaser.Scene {
         this.load.audio('shotgun', 'assets/sounds/shotgun.mp3');
 
         // Player sprite sheet - walking with gun
+        // First load the player
+        this.load.image('player_handgun', basePlayerFolder + '/Walk_gun_000.png');
+
+        // Next load the sprite sheet
+        // #TODO Not sure if we want the first frame of this sprite sheet to be the player so I am leaving it
+        // as loading twice for now!!!
         this.load.image('walk_gun0', basePlayerFolder + '/Walk_gun_000.png');
         this.load.image('walk_gun1', basePlayerFolder + '/Walk_gun_001.png');
         this.load.image('walk_gun2', basePlayerFolder + '/Walk_gun_002.png');
         this.load.image('walk_gun3', basePlayerFolder + '/Walk_gun_003.png');
         this.load.image('walk_gun4', basePlayerFolder + '/Walk_gun_004.png');
         this.load.image('walk_gun5', basePlayerFolder + '/Walk_gun_005.png');
+
+        // Load zombie 3 male sprites
+        this.load.image('zombie3_walk0', baseZombie3Folder + 'walk_000.png');
+        this.load.image('zombie3_walk1', baseZombie3Folder + 'walk_001.png');
+        this.load.image('zombie3_walk2', baseZombie3Folder + 'walk_002.png');
+        this.load.image('zombie3_walk3', baseZombie3Folder + 'walk_003.png');
+        this.load.image('zombie3_walk4', baseZombie3Folder + 'walk_004.png');
+        this.load.image('zombie3_walk5', baseZombie3Folder + 'walk_005.png');
+        this.load.image('zombie3_walk6', baseZombie3Folder + 'walk_006.png');
+        this.load.image('zombie3_walk7', baseZombie3Folder + 'walk_007.png');
+        this.load.image('zombie3_walk8', baseZombie3Folder + 'walk_008.png');
     }
 
     create () {
@@ -57,8 +74,6 @@ class GameScene extends Phaser.Scene {
 
         // Add 2 groups for Bullet objects
         this.playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
-
-        this.enemyBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
 
         // Add background player, reticle, healthpoint sprites
         let background = this.add.image(800, 600, 'background');
@@ -77,7 +92,7 @@ class GameScene extends Phaser.Scene {
 
         let spawnOptions = { collisionTarget: this.player };
 
-        this.enemySpawner = new Spawner(Enemy, this.enemies, this, 300, 600, 'player_handgun', spawnerOptions, spawnOptions);
+        this.enemySpawner = new Spawner(Enemy, this.enemies, this, 300, 600, 'zombie3_walk0', spawnerOptions, spawnOptions);
 
         this.ball = new Ball(this, 550, 600, 'target');
 
@@ -199,6 +214,7 @@ class GameScene extends Phaser.Scene {
 
     // Create all animations for our scene here for now.
     createAnimations () {
+        // Player Walking with gun
         this.anims.create({
             key: 'player_walk_gun',
             frames: [
@@ -208,6 +224,24 @@ class GameScene extends Phaser.Scene {
                 { key: 'walk_gun3' },
                 { key: 'walk_gun4' },
                 { key: 'walk_gun5' }
+            ],
+            frameRate: 8,
+            repeat: -1
+        });
+
+        // Zombie 3 walking
+        this.anims.create({
+            key: 'zombie3_walk',
+            frames: [
+                { key: 'zombie3_walk0' },
+                { key: 'zombie3_walk1' },
+                { key: 'zombie3_walk2' },
+                { key: 'zombie3_walk3' },
+                { key: 'zombie3_walk4' },
+                { key: 'zombie3_walk5' },
+                { key: 'zombie3_walk6' },
+                { key: 'zombie3_walk7' },
+                { key: 'zombie3_walk8' }
             ],
             frameRate: 8,
             repeat: -1

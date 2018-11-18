@@ -1,5 +1,3 @@
-import { addCollisions } from '../common/Utilities';
-
 /**
  * Base class for an enemy
  */
@@ -32,7 +30,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     static spawn (options, scene, x, y, texture, frame) {
         let enemy = new Enemy(scene, x, y, texture, frame);
         
-        enemy.setOrigin(0.5, 0.5).setDisplaySize(137.67, 110.67).setCollideWorldBounds(true);
+        enemy.setOrigin(0.5, 0.5).setDisplaySize(167.33, 170.33).setCollideWorldBounds(true);
 
         enemy.health = options.health || 3;
 
@@ -41,37 +39,6 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         }
         
         return enemy;
-    }
-
-    enemyFire (target, time, scene) {
-        if (this.active === false) {
-            return;
-        }
-
-        if ((time - this.lastFired) > 1000) {
-            this.lastFired = time;
-
-            // Get bullet from bullets group
-            var bullet = this.scene.enemyBullets.get().setActive(true).setVisible(true);
-
-            if (bullet) {
-                bullet.fire(this, target);
-
-                // add collisions
-                let collisionObjects = [
-                    {
-                        target: scene.player,
-                        callback: scene.player.playerHitCallback
-                    },
-                    {
-                        target: scene.ball,
-                        callback: scene.ball.ballHitCallback
-                    }
-                ];
-
-                addCollisions(collisionObjects);
-            }
-        }
     }
 
     enemyHitCallback (enemy, bulletHit) {
@@ -103,9 +70,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         // Make enemy fire
         if (this.active) {
             this.moveToTarget(target);
+            this.anims.play('zombie3_walk', true);
         }
-
-        this.enemyFire(target, time, this.scene);
     }
 }
 
