@@ -15,6 +15,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     setMovement () {
         // Assign this to a variable so we can use it.
         let player = this;
+        console.log(player);
 
         // Creates object for input with WASD kets
         let moveKeys = player.scene.input.keyboard.addKeys({
@@ -27,6 +28,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         // Enables movement of player with WASD keys
         player.scene.input.keyboard.on('keydown_W', function (event) {
             player.setAccelerationY(-800);
+
         });
         player.scene.input.keyboard.on('keydown_S', function (event) {
             player.setAccelerationY(800);
@@ -85,6 +87,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             // Destroy bullet
             bulletHit.setActive(false).setVisible(false);
         }
+    }
+
+    /**
+     * Playes the walk with gun animation
+     * @param {Boolean} state 
+     */
+    walkWithGun (state) {
+        this.anims.play('player_walk_gun', state);
     }
 }
 
