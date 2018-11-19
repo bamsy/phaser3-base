@@ -43,9 +43,9 @@ class GameScene extends Phaser.Scene {
         this.load.audio('pistol', 'assets/sounds/pistol.mp3');
         this.load.audio('shotgun', 'assets/sounds/shotgun.mp3');
         this.load.scenePlugin('WeaponPlugin', '../node_modules/phaser3-weapon-plugin/dist/WeaponPlugin.js', null, 'weapons');
-    }
 
-    create() {
+
+
         // Set world bounds
         this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
 
@@ -75,8 +75,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('zombie3_walk7', baseZombie3Folder + 'walk_007.png');
         this.load.image('zombie3_walk8', baseZombie3Folder + 'walk_008.png');
     }
-
-    create () {
+    create() {
         // create animations
         this.createAnimations();
 
@@ -84,7 +83,10 @@ class GameScene extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
 
         // Add 2 groups for Bullet objects
-        this.playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
+        this.playerBullets = this.physics.add.group({
+            classType: Bullet,
+            runChildUpdate: true
+        });
 
         // Add background player, reticle, healthpoint sprites
         let background = this.add.image(800, 600, 'background');
@@ -171,7 +173,7 @@ class GameScene extends Phaser.Scene {
 
     update(time, delta) {
         // Check for bullet collision with ball
-        this.physics.overlap(this.ball,this.weapon.bullets,this.ball.ballHitCallback,null,this)
+        this.physics.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this)
 
         // Rotates player to face towards reticle
         this.player.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y);
@@ -179,16 +181,15 @@ class GameScene extends Phaser.Scene {
         // animate the player if they are moving
         // stop the animation when they aren't
         if (this.player.body.acceleration.x !== 0 || this.player.body.acceleration.y !== 0) {
-            this.player.walkWithGun(true);
-        }
-        else {
-            this.player.walkWithGun(false);
+            // this.player.walkWithGun(true);
+        } else {
+            // this.player.walkWithGun(false);
         }
 
         // Make reticle move with player
         this.reticle.body.velocity.x = this.player.body.velocity.x;
         this.reticle.body.velocity.y = this.player.body.velocity.y;
-        
+
         if (this.input.activePointer.isDown) {
             this.weapon.fire()
         }
@@ -209,7 +210,7 @@ class GameScene extends Phaser.Scene {
         if (!sprite || !sprite.body) {
             return;
         }
-        
+
         var angle, currVelocitySqr, vx, vy;
         vx = sprite.body.velocity.x;
         vy = sprite.body.velocity.y;
@@ -253,17 +254,28 @@ class GameScene extends Phaser.Scene {
     }
 
     // Create all animations for our scene here for now.
-    createAnimations () {
+    createAnimations() {
         // Player Walking with gun
         this.anims.create({
             key: 'player_walk_gun',
-            frames: [
-                { key: 'walk_gun0' },
-                { key: 'walk_gun1' },
-                { key: 'walk_gun2' },
-                { key: 'walk_gun3' },
-                { key: 'walk_gun4' },
-                { key: 'walk_gun5' }
+            frames: [{
+                    key: 'walk_gun0'
+                },
+                {
+                    key: 'walk_gun1'
+                },
+                {
+                    key: 'walk_gun2'
+                },
+                {
+                    key: 'walk_gun3'
+                },
+                {
+                    key: 'walk_gun4'
+                },
+                {
+                    key: 'walk_gun5'
+                }
             ],
             frameRate: 8,
             repeat: -1
@@ -272,16 +284,33 @@ class GameScene extends Phaser.Scene {
         // Zombie 3 walking
         this.anims.create({
             key: 'zombie3_walk',
-            frames: [
-                { key: 'zombie3_walk0' },
-                { key: 'zombie3_walk1' },
-                { key: 'zombie3_walk2' },
-                { key: 'zombie3_walk3' },
-                { key: 'zombie3_walk4' },
-                { key: 'zombie3_walk5' },
-                { key: 'zombie3_walk6' },
-                { key: 'zombie3_walk7' },
-                { key: 'zombie3_walk8' }
+            frames: [{
+                    key: 'zombie3_walk0'
+                },
+                {
+                    key: 'zombie3_walk1'
+                },
+                {
+                    key: 'zombie3_walk2'
+                },
+                {
+                    key: 'zombie3_walk3'
+                },
+                {
+                    key: 'zombie3_walk4'
+                },
+                {
+                    key: 'zombie3_walk5'
+                },
+                {
+                    key: 'zombie3_walk6'
+                },
+                {
+                    key: 'zombie3_walk7'
+                },
+                {
+                    key: 'zombie3_walk8'
+                }
             ],
             frameRate: 8,
             repeat: -1
