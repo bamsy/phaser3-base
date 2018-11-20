@@ -5,6 +5,7 @@ import GameScene from './scenes/GameScene';
 
 var config = {
     type: Phaser.WEBGL,
+    parent: 'content',
     width: 800,
     height: 600,
     physics: {

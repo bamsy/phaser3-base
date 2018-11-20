@@ -7,6 +7,11 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         scene.physics.world.enable(this);
         scene.add.existing(this);
 
+        // this guy is shaped more like a rectangle, but Aracde bodies don't rotate
+        // on the other hand, two circle bodies seem to get stuck to each other when they touch each other 
+        // so lets do squares, even though that is not ideal
+        this.body.setSize(300, 300);
+
         this.scene = scene;
         this.lastFired = 0;
     }
@@ -48,7 +53,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             console.log('Enemy hp: ', enemy.health);
 
             // Destroy bullet
-            bulletHit.setActive(false).setVisible(false);
+            bulletHit.setActive(false).setVisible(false).destroy();
 
             // Kill enemy if health <= 0
             if (enemy.health <= 0) {

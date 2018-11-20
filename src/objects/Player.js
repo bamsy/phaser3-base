@@ -7,7 +7,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, texture, frame) {
         super(scene, x, y, texture, frame);
         scene.physics.world.enable(this);
-        this.body.setCircle(22);
+        this.body.setOffset(48, 19);
+        this.body.setCircle(150);
         scene.add.existing(this);
         this.setMovement();
     }
@@ -65,7 +66,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         // Enables movement of player with WASD keys
         player.scene.input.keyboard.on('keydown_W', function (event) {
             player.setAccelerationY(-800);
-
         });
         player.scene.input.keyboard.on('keydown_S', function (event) {
             player.setAccelerationY(800);
