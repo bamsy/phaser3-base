@@ -1,5 +1,3 @@
-import { addCollisions } from '../common/Utilities';
-
 /**
  * Base class for a Player
  */

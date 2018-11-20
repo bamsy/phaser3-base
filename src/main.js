@@ -2,7 +2,7 @@ import 'phaser';
 import BootScene from './scenes/BootScene';
 import TitleScene from './scenes/TitleScene';
 import GameScene from './scenes/GameScene';
-import {Plugin as WeaponPlugin} from 'phaser3-weapon-plugin'
+import { Plugin as WeaponPlugin } from 'phaser3-weapon-plugin';
 
 var config = {
     type: Phaser.WEBGL,
@@ -17,9 +17,7 @@ var config = {
         }
 
     },
-    plugins: {
-        global: [WeaponPlugin],
-    },
+    plugins: { global: [ WeaponPlugin ] },
     scene: [
         BootScene,
         TitleScene,

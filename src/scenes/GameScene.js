@@ -6,10 +6,8 @@ import Ball from '../objects/Ball';
 import Spawner from '../objects/Spawner';
 
 class GameScene extends Phaser.Scene {
-    constructor(test) {
-        super({
-            key: 'GameScene'
-        });
+    constructor (test) {
+        super({ key: 'GameScene' });
 
         // props
         this.player = null;
@@ -28,10 +26,10 @@ class GameScene extends Phaser.Scene {
         this.worldY = 600;
         this.leftGoals = 0;
         this.rightGoals = 0;
-        this.weapon = null
+        this.weapon = null;
     }
 
-    preload() {
+    preload () {
         // Load in images and sprites
         let basePlayerFolder = 'assets/images/sprites/tds-player-sprites/Characters/PNG_Bodyparts&Animations/PNG_Animations/Man/Walk_gun';
         let baseZombie3Folder = 'assets/images/sprites/Zombies/PNGAnimations/1LVL/Zombie3_male/Walk/';
@@ -44,11 +42,8 @@ class GameScene extends Phaser.Scene {
         this.load.audio('shotgun', 'assets/sounds/shotgun.mp3');
         this.load.scenePlugin('WeaponPlugin', '../node_modules/phaser3-weapon-plugin/dist/WeaponPlugin.js', null, 'weapons');
 
-
-
         // Set world bounds
         this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
-
 
         // Player sprite sheet - walking with gun
         // First load the player
@@ -75,7 +70,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('zombie3_walk7', baseZombie3Folder + 'walk_007.png');
         this.load.image('zombie3_walk8', baseZombie3Folder + 'walk_008.png');
     }
-    create() {
+    create () {
         // create animations
         this.createAnimations();
 
@@ -92,14 +87,15 @@ class GameScene extends Phaser.Scene {
         let background = this.add.image(10, 10, 'background');
 
         this.player = new Player(this, 400, 300, 'player_handgun');
+
         // Set image/sprite properties
         background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
 
         //  Creates 30 bullets, using the 'bullet' graphic
         this.weapon = this.weapons.add(30, 'bullet');
-        this.weapon.debugPhysics = true
+        this.weapon.debugPhysics = true;
         this.weapon.bulletKillType = WeaponPlugin.consts.KILL_WORLD_BOUNDS;
-        this.weapon.bulletLifespan = 500
+        this.weapon.bulletLifespan = 500;
 
         //  The speed at which the bullet is fired
         this.weapon.bulletSpeed = 600;
@@ -126,9 +122,7 @@ class GameScene extends Phaser.Scene {
             maxObjects: 3
         };
 
-        let spawnOptions = {
-            collisionTarget: this.player
-        };
+        let spawnOptions = { collisionTarget: this.player };
 
         this.enemySpawner = new Spawner(Enemy, this.enemies, this, 150, 300, 'zombie3_walk0', spawnerOptions, spawnOptions);
 
@@ -179,9 +173,9 @@ class GameScene extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
     }
 
-    update(time, delta) {
+    update (time, delta) {
         // Check for bullet collision with ball
-        this.physics.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this)
+        this.physics.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
 
         // Rotates player to face towards reticle
         this.player.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y);
@@ -189,9 +183,10 @@ class GameScene extends Phaser.Scene {
         // animate the player if they are moving
         // stop the animation when they aren't
         if (this.player.body.acceleration.x !== 0 || this.player.body.acceleration.y !== 0) {
-            // this.player.walkWithGun(true);
-        } else {
-            // this.player.walkWithGun(false);
+            this.player.walkWithGun(true);
+        }
+        else {
+            this.player.walkWithGun(false);
         }
 
         // Make reticle move with player
@@ -199,7 +194,7 @@ class GameScene extends Phaser.Scene {
         this.reticle.body.velocity.y = this.player.body.velocity.y;
 
         if (this.input.activePointer.isDown) {
-            this.weapon.fire()
+            this.weapon.fire();
         }
 
         // Constrain velocity of player
@@ -214,7 +209,7 @@ class GameScene extends Phaser.Scene {
     }
 
     // Ensures sprite speed doesnt exceed maxVelocity while update is called
-    constrainVelocity(sprite, maxVelocity) {
+    constrainVelocity (sprite, maxVelocity) {
         if (!sprite || !sprite.body) {
             return;
         }
@@ -233,24 +228,26 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    checkGoal() {
+    checkGoal () {
         // just for now, the net starts 200 pixels below the top of the world,
         // and ends 200 pixels above the top of the world
 
         if (this.ball.body.top >= 400 && this.ball.body.bottom <= (this.worldY - 400)) {
             if (this.ball.body.left <= this.physics.world.bounds.left) {
                 this.goalScored(true);
-            } else if (this.ball.body.right >= this.physics.world.bounds.right) {
+            }
+            else if (this.ball.body.right >= this.physics.world.bounds.right) {
                 this.goalScored(false);
             }
         }
     }
 
-    goalScored(isLeft) {
+    goalScored (isLeft) {
         if (isLeft) {
             this.leftGoals++;
             console.log('LEFT SCORE! ' + this.leftGoals);
-        } else {
+        }
+        else {
             this.rightGoals++;
             console.log('RIGHT SCORE! ' + this.rightGoals);
         }
@@ -262,28 +259,16 @@ class GameScene extends Phaser.Scene {
     }
 
     // Create all animations for our scene here for now.
-    createAnimations() {
+    createAnimations () {
         // Player Walking with gun
         this.anims.create({
             key: 'player_walk_gun',
-            frames: [{
-                    key: 'walk_gun0'
-                },
-                {
-                    key: 'walk_gun1'
-                },
-                {
-                    key: 'walk_gun2'
-                },
-                {
-                    key: 'walk_gun3'
-                },
-                {
-                    key: 'walk_gun4'
-                },
-                {
-                    key: 'walk_gun5'
-                }
+            frames: [ { key: 'walk_gun0' },
+                { key: 'walk_gun1' },
+                { key: 'walk_gun2' },
+                { key: 'walk_gun3' },
+                { key: 'walk_gun4' },
+                { key: 'walk_gun5' }
             ],
             frameRate: 8,
             repeat: -1
@@ -292,33 +277,15 @@ class GameScene extends Phaser.Scene {
         // Zombie 3 walking
         this.anims.create({
             key: 'zombie3_walk',
-            frames: [{
-                    key: 'zombie3_walk0'
-                },
-                {
-                    key: 'zombie3_walk1'
-                },
-                {
-                    key: 'zombie3_walk2'
-                },
-                {
-                    key: 'zombie3_walk3'
-                },
-                {
-                    key: 'zombie3_walk4'
-                },
-                {
-                    key: 'zombie3_walk5'
-                },
-                {
-                    key: 'zombie3_walk6'
-                },
-                {
-                    key: 'zombie3_walk7'
-                },
-                {
-                    key: 'zombie3_walk8'
-                }
+            frames: [ { key: 'zombie3_walk0' },
+                { key: 'zombie3_walk1' },
+                { key: 'zombie3_walk2' },
+                { key: 'zombie3_walk3' },
+                { key: 'zombie3_walk4' },
+                { key: 'zombie3_walk5' },
+                { key: 'zombie3_walk6' },
+                { key: 'zombie3_walk7' },
+                { key: 'zombie3_walk8' }
             ],
             frameRate: 8,
             repeat: -1
