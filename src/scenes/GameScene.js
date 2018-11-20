@@ -24,8 +24,8 @@ class GameScene extends Phaser.Scene {
         this.hp1 = null;
         this.hp2 = null;
         this.hp3 = null;
-        this.worldX = 1600;
-        this.worldY = 1200;
+        this.worldX = 800;
+        this.worldY = 600;
         this.leftGoals = 0;
         this.rightGoals = 0;
         this.weapon = null
@@ -89,7 +89,9 @@ class GameScene extends Phaser.Scene {
         });
 
         // Add background player, reticle, healthpoint sprites
-        let background = this.add.image(800, 600, 'background');
+        let background = this.add.image(10, 10, 'background');
+
+        this.player = new Player(this, 400, 300, 'player_handgun');
         // Set image/sprite properties
         background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
 
@@ -111,8 +113,6 @@ class GameScene extends Phaser.Scene {
             runChildUpdate: true
         });
 
-        this.player = new Player(this, 800, 600, 'player_handgun');
-        // this.player = this.add.sprite(800,600, 'player_handgun')
         this.physics.add.existing(this.player);
         this.weapon.trackSprite(this.player, 0, 0, true);
 
@@ -130,14 +130,17 @@ class GameScene extends Phaser.Scene {
             collisionTarget: this.player
         };
 
-        this.enemySpawner = new Spawner(Enemy, this.enemies, this, 300, 600, 'zombie3_walk0', spawnerOptions, spawnOptions);
+        this.enemySpawner = new Spawner(Enemy, this.enemies, this, 150, 300, 'zombie3_walk0', spawnerOptions, spawnOptions);
 
         this.ball = new Ball(this, 550, 600, 'target');
 
-        this.reticle = new Reticle(this, 1000, 600, 'target');
+        this.reticle = new Reticle(this, 400, 300, 'target');
         this.hp1 = this.add.image(-350, -250, 'target').setScrollFactor(0.5, 0.5);
         this.hp2 = this.add.image(-300, -250, 'target').setScrollFactor(0.5, 0.5);
         this.hp3 = this.add.image(-250, -250, 'target').setScrollFactor(0.5, 0.5);
+
+        // Set image/sprite properties
+        background.setOrigin(0, 0).setDisplaySize(this.worldX, this.worldY);
 
         this.ball.setOrigin(0.5, 0.5).setDisplaySize(200, 200).setCollideWorldBounds(true).setDrag(10, 10);
         this.player.setOrigin(0.5, 0.5).setDisplaySize(137.67, 110.67).setCollideWorldBounds(true).setDrag(500, 500);
@@ -150,8 +153,13 @@ class GameScene extends Phaser.Scene {
         this.player.health = 3;
 
         // Set camera properties
+        // this line is the reason our 800*600 field takes up 1/4 of the 800*600 viewport
+        // i think we'd be better off with this at 0 and leaving some space at the top of the view port for info
+        // this.physics.world.setBounds(0, 50, this.worldX, this.worldY);
+        // or something
         this.cameras.main.zoom = 0.5;
-        this.cameras.main.startFollow(this.player);
+
+        // this.cameras.main.startFollow(this.player);
 
         // Fires bullet from player on left click of mouse
         // this.player.bulletFireSetup();

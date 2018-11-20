@@ -10,7 +10,8 @@ class Bullet extends Phaser.GameObjects.Image {
         this.xSpeed = 0;
         this.ySpeed = 0;
         this.setSize(12, 12, true);
-        this.gunLength = 60; // this should be a parameter probably
+        this.gunLength = 20; // this should be a parameter probably
+        this.gunWidth = 25; // the amount the gun is being held left or right of center
     }
 
     fire (shooter, target) {
@@ -20,7 +21,9 @@ class Bullet extends Phaser.GameObjects.Image {
         // ie we dont shoot bullets out of his 0 degre, we shoot bullets out of his 90 degree
         // or something
         let direction = Math.atan((target.x - shooter.x) / (target.y - shooter.y));
-        this.setPosition(shooter.x + (this.gunLength * Math.cos(shooter.rotation)), shooter.y + (this.gunLength * Math.sin(shooter.rotation)));
+
+        this.setPosition(shooter.x + (this.gunLength * Math.cos(shooter.rotation)) + (this.gunWidth * Math.cos(shooter.rotation + (Math.PI / 2))),
+            shooter.y + (this.gunLength * Math.sin(shooter.rotation)) + (this.gunWidth * Math.sin(shooter.rotation + (Math.PI / 2))));
 
         // Calculate X and y velocity of bullet to moves it from shooter to target
         if (target.y >= shooter.y) {
