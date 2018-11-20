@@ -48,10 +48,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
     
     enemyHitCallback (enemyHit, bulletHit) {
         // lower the hp of the enemy
-        console.log('in enemy hit callback...');
         if (enemyHit.active === true) {
             enemyHit.health -= 1;
-            console.log('Enemy hp: ', enemyHit.health);
         }
 
         bulletHit.kill();
