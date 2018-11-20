@@ -45,30 +45,25 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         
         return enemy;
     }
+    
+    enemyHitCallback (enemyHit, bulletHit) {
+        // lower the hp of the enemy
+        console.log('in enemy hit callback...');
+        if (enemyHit.active === true) {
+            enemyHit.health -= 1;
+            console.log('Enemy hp: ', enemyHit.health);
+        }
 
-    enemyHitCallback (enemy, bulletHit) {
-        // Reduce health of enemy
-        if (bulletHit.active === true && enemy.active === true) {
-            enemy.health -= 1;
-            console.log('Enemy hp: ', enemy.health);
+        bulletHit.kill();
 
-            // Destroy bullet
-            bulletHit.setActive(false).setVisible(false).destroy();
-
-            // Kill enemy if health <= 0
-            if (enemy.health <= 0) {
-                enemy.setActive(false).setVisible(false);
-
-                // mark for removal
-                enemy.destroyed = true;
-
-                // eco friendly
-                enemy.destroy();
-            }
+        if (enemyHit.health <= 0) {
+            enemyHit.setActive(false).setVisible(false);
+            enemyHit.destroyed = true;
+            enemyHit.destroy();
         }
     }
 
-    update (target, time) {
+    update (target, time, scene) {
         // Rotates enemy to face towards target
         this.rotation = Phaser.Math.Angle.Between(this.x, this.y, target.x, target.y);
 
@@ -77,6 +72,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.moveToTarget(target);
             this.anims.play('zombie3_walk', true);
         }
+
+        scene.physics.add.overlap(this, scene.weapon.bullets, this.enemyHitCallback, null, scene);
     }
 }
 

@@ -4,6 +4,7 @@ import Enemy from '../objects/Enemy';
 import Reticle from '../objects/Reticle';
 import Ball from '../objects/Ball';
 import Spawner from '../objects/Spawner';
+import { addCollisions } from '../common/Utilities';
 
 class GameScene extends Phaser.Scene {
     constructor (test) {
@@ -174,8 +175,10 @@ class GameScene extends Phaser.Scene {
     }
 
     update (time, delta) {
+        let scene = this;
+
         // Check for bullet collision with ball
-        this.physics.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
+        this.physics.add.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
 
         // Rotates player to face towards reticle
         this.player.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y);
@@ -201,7 +204,8 @@ class GameScene extends Phaser.Scene {
         this.constrainVelocity(this.player, 500);
 
         this.enemies.forEach(enemy => {
-            enemy.update(this.player, time);
+            scene.physics.add.overlap(enemy, scene.weapon.bullets, enemy.enemyHitCallback, null, scene);
+            enemy.update(this.player, time, scene);
         });
         this.checkGoal();
 
