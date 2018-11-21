@@ -233,7 +233,7 @@ class GameScene extends Phaser.Scene {
         // just for now, the net starts 200 pixels below the top of the world,
         // and ends 200 pixels above the top of the world
 
-        if (this.ball.body.top >= 400 && this.ball.body.bottom <= (this.worldY - 400)) {
+        if (this.ball.body.top >= 200 && this.ball.body.bottom <= (this.worldY - 200)) {
             if (this.ball.body.left <= this.physics.world.bounds.left) {
                 this.goalScored(true);
             }
@@ -255,8 +255,8 @@ class GameScene extends Phaser.Scene {
 
         this.ball.setVelocityX(0);
         this.ball.setVelocityY(0);
-        this.ball.setX(800);
-        this.ball.setY(600);
+        this.ball.setX(400);
+        this.ball.setY(300);
     }
 
     // Create all animations for our scene here for now.
