@@ -90,17 +90,16 @@ class GameScene extends Phaser.Scene {
         background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
 
         // Bullet class
-        this.gunBullet = new Bullet(this)
-        this.gunBullet.set
+        this.gunBullet = new Bullet(this);
 
         //  Creates 30 bullets, using the 'bullet' graphic
         this.weapon = this.weapons.add(30, 'bullet');
         
         // scale bullets
         this.weapon.bullets.children.each((b) => {
-            b.setScale(0.15)
-            b.body.updateBounds()
-        })
+            b.setScale(0.3);
+            b.body.updateBounds();
+        });
 
         this.weapon.debugPhysics = true;
         this.weapon.bulletKillType = WeaponPlugin.consts.KILL_WORLD_BOUNDS;

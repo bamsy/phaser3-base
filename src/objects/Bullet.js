@@ -11,8 +11,6 @@ class Bullet extends Phaser.GameObjects.Image {
         this.ySpeed = 0;
         this.gunLength = 20; // this should be a parameter probably
         this.gunWidth = 25; // the amount the gun is being held left or right of center
-        this.scaleX = 0.1;
-        this.scaleY = 0.1;
     }
 }
 
