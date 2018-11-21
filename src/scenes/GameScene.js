@@ -16,8 +16,6 @@ class GameScene extends Phaser.Scene {
         this.enemies = null;
         this.healthpoints = null;
         this.reticle = null;
-        this.moveKeys = null;
-        this.enemyBullets = null;
         this.playerBullets = null;
         this.hp1 = null;
         this.hp2 = null;
@@ -93,6 +91,7 @@ class GameScene extends Phaser.Scene {
 
         //  Creates 30 bullets, using the 'bullet' graphic
         this.weapon = this.weapons.add(30, 'bullet');
+        console.log(this.weapon);
         this.weapon.debugPhysics = true;
         this.weapon.bulletKillType = WeaponPlugin.consts.KILL_WORLD_BOUNDS;
         this.weapon.bulletLifespan = 500;
@@ -136,8 +135,8 @@ class GameScene extends Phaser.Scene {
         // Set image/sprite properties
         background.setOrigin(0, 0).setDisplaySize(this.worldX, this.worldY);
 
-        this.ball.setOrigin(0.5, 0.5).setDisplaySize(200, 200).setCollideWorldBounds(true).setDrag(10, 10);
-        this.player.setOrigin(0.5, 0.5).setDisplaySize(137.67, 110.67).setCollideWorldBounds(true).setDrag(500, 500);
+        this.ball.setOrigin(0.5, 0.5).setScale(1.5).setCollideWorldBounds(true).setDrag(10, 10);
+        this.player.setOrigin(0.5, 0.5).setScale(0.15).setCollideWorldBounds(true).setDrag(500, 500);
         this.reticle.setOrigin(0.5, 0.5).setDisplaySize(25, 25).setCollideWorldBounds(true);
         this.hp1.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
         this.hp2.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
@@ -151,7 +150,7 @@ class GameScene extends Phaser.Scene {
         // i think we'd be better off with this at 0 and leaving some space at the top of the view port for info
         // this.physics.world.setBounds(0, 50, this.worldX, this.worldY);
         // or something
-        this.cameras.main.zoom = 0.5;
+        this.cameras.main.zoom = 1;
 
         // this.cameras.main.startFollow(this.player);
 

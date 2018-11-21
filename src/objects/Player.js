@@ -60,33 +60,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             }
         });
     }
-
-    playerHitCallback (playerHit, bulletHit) {
-        // Reduce health of player
-        let scene = playerHit.scene;
-
-        if (bulletHit.active === true && playerHit.active === true) {
-            playerHit.health = playerHit.health - 1;
-            console.log('Player hp: ', playerHit.health);
-
-            // Kill hp sprites and kill player if health <= 0
-            if (playerHit.health === 2) {
-                scene.hp3.destroy();
-            }
-            else if (playerHit.health === 1) {
-                scene.hp2.destroy();
-            }
-            else {
-                scene.hp1.destroy();
-
-                // Game over state should execute here
-            }
-
-            // Destroy bullet
-            bulletHit.setActive(false).setVisible(false);
-        }
-    }
-
+    
     /**
      * Playes the walk with gun animation
      * @param {Boolean} state 
