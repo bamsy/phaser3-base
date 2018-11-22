@@ -31,6 +31,7 @@ class GameScene extends Phaser.Scene {
         // Load in images and sprites
         let basePlayerFolder = 'assets/images/sprites/tds-player-sprites/Characters/PNG_Bodyparts&Animations/PNG_Animations/Man/Walk_gun';
         let baseZombie3Folder = 'assets/images/sprites/Zombies/PNGAnimations/1LVL/Zombie3_male/Walk/';
+        let basePistolShotFolder = 'assets/images/sprites/tds-player-sprites/Characters/PNG_Bodyparts&Animations/PNG_Animations/Man/Gun_Shot';
 
         this.load.image('bullet', 'assets/images/sprites/bullet6.png');
         this.load.image('target', 'assets/images/demoscene/ball.png');
@@ -57,6 +58,13 @@ class GameScene extends Phaser.Scene {
         this.load.image('walk_gun4', basePlayerFolder + '/Walk_gun_004.png');
         this.load.image('walk_gun5', basePlayerFolder + '/Walk_gun_005.png');
 
+        // Load Pistol Gunshot animation
+        this.load.image('pistol_shot0', basePistolShotFolder + '/Gun_Shot_000.png');
+        this.load.image('pistol_shot1', basePistolShotFolder + '/Gun_Shot_001.png');
+        this.load.image('pistol_shot2', basePistolShotFolder + '/Gun_Shot_002.png');
+        this.load.image('pistol_shot3', basePistolShotFolder + '/Gun_Shot_003.png');
+        this.load.image('pistol_shot4', basePistolShotFolder + '/Gun_Shot_004.png');
+
         // Load zombie 3 male sprites
         this.load.image('zombie3_walk0', baseZombie3Folder + 'walk_000.png');
         this.load.image('zombie3_walk1', baseZombie3Folder + 'walk_001.png');
@@ -69,9 +77,6 @@ class GameScene extends Phaser.Scene {
         this.load.image('zombie3_walk8', baseZombie3Folder + 'walk_008.png');
     }
     create () {
-        // create animations
-        this.createAnimations();
-
         // Set world bounds
         this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
 
@@ -85,6 +90,9 @@ class GameScene extends Phaser.Scene {
         let background = this.add.image(10, 10, 'background');
 
         this.player = new Player(this, 400, 300, 'player_handgun');
+        
+        // create animations
+        this.createAnimations();
 
         // Set image/sprite properties
         background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
@@ -192,11 +200,8 @@ class GameScene extends Phaser.Scene {
 
         // animate the player if they are moving
         // stop the animation when they aren't
-        if (this.player.body.acceleration.x !== 0 || this.player.body.acceleration.y !== 0) {
+        if ((this.player.body.acceleration.x !== 0 || this.player.body.acceleration.y !== 0) && !this.player.stopWalking) {
             this.player.walkWithGun(true);
-        }
-        else {
-            this.player.walkWithGun(false);
         }
 
         // Make reticle move with player
@@ -205,6 +210,7 @@ class GameScene extends Phaser.Scene {
 
         if (this.input.activePointer.isDown) {
             this.weapon.fire();
+            this.player.firePistol(true);
         }
 
         // Constrain velocity of player
@@ -284,6 +290,19 @@ class GameScene extends Phaser.Scene {
             repeat: -1
         });
 
+        // Pistol Shot Animation
+        this.anims.create({
+            key: 'player_pistol_shot',
+            frames: [ { key: 'pistol_shot0' },
+                { key: 'pistol_shot1' },
+                { key: 'pistol_shot2' },
+                { key: 'pistol_shot3' },
+                { key: 'pistol_shot4' }
+            ],
+            frameRate: 8,
+            repeat: 0
+        });
+
         // Zombie 3 walking
         this.anims.create({
             key: 'zombie3_walk',
@@ -300,6 +319,10 @@ class GameScene extends Phaser.Scene {
             frameRate: 8,
             repeat: -1
         });
+    }
+
+    testing () {
+        console.log('testing');
     }
 }
 

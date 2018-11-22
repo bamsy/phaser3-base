@@ -9,6 +9,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setCircle(150);
         scene.add.existing(this);
         this.setMovement();
+
+        // Variable to control the walking animation since it will override the shooting
+        // animation when running and shooting.
+        this.stopWalking = false;
+
+        // set animation listener
+        this.on('animationstart', this.animationStart, this);
+        this.on('animationcomplete', this.animationComplete, this);
     }
 
     setMovement () {
@@ -67,6 +75,32 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      */
     walkWithGun (state) {
         this.anims.play('player_walk_gun', state);
+    }
+
+    /**
+     * Plays the pistol shot animation if passed true,
+     * Stops the animation if passed false.
+     * @param {Boolean} state 
+     */
+    firePistol (state) {
+        this.anims.play('player_pistol_shot', state);
+    }
+
+    // This method is called whenever an animation is started for a player.
+    // The walking animation was overriding the shooting animation in some cases
+    // so I had to create a variable to control when the walking animation played.
+    // Basically I turn the walking animation off when the gun is firing.
+    animationStart (animation, frame, sprite) {
+        if (animation.key === 'player_pistol_shot') {
+            sprite.stopWalking = true;
+        }
+    }
+
+    // This method is called whenver an animation is ended for a player.
+    animationComplete (animation, frame, sprite) {
+        if (animation.key === 'player_pistol_shot') {
+            sprite.stopWalking = false;
+        }
     }
 }
 
