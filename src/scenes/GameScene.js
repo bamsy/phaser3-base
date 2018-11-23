@@ -125,8 +125,8 @@ class GameScene extends Phaser.Scene {
         //  The speed at which the bullet is fired
         this.weapon.bulletSpeed = 600;
 
-        //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 60ms
-        this.weapon.fireRate = 100;
+        //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 600ms
+        this.weapon.fireRate = 600;
 
         // Add 2 groups for Bullet objects
         this.enemyBullets = this.physics.add.group({
@@ -200,7 +200,7 @@ class GameScene extends Phaser.Scene {
 
     update (time, delta) {
         let scene = this;
-
+        
         // Check for bullet collision with ball
         this.physics.add.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
 
