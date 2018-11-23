@@ -15,6 +15,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         this.lastFired = 0;
         this.dead = false;
+        this.immovable = true;
         this.on('animationcomplete', this.animationComplete, this);
     }
 
@@ -61,6 +62,15 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    enemyOverlapEnemyCallback (enemy1, enemy2) {
+        // Don't need to do anything here it seems with immovable set
+        // should be calculate distance between this one and others:
+        // check if distance < desiredSeperation
+        // if true, get normailsed distance set distance = distance * desired * smoothingValue
+        // enem1.x += distance.x, enemy1.y +=distance.y AND enemy2.x -= distance.x enemy2.y -= distance.y
+        
+    }
+
     update (target, time, scene) {
         // Rotates enemy to face towards target
         this.rotation = Phaser.Math.Angle.Between(this.x, this.y, target.x, target.y);
@@ -78,6 +88,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         }
 
         scene.physics.add.overlap(this, scene.weapon.bullets, this.enemyHitCallback, null, scene);
+        scene.physics.add.collider(this, scene.enemies, this.enemyOverlapEnemyCallback, null, scene);
     }
 
     // This method is called whenver an animation is ended for an enemy.
