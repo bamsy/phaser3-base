@@ -80,7 +80,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.overlap(this, scene.weapon.bullets, this.enemyHitCallback, null, scene);
     }
 
-    // This method is called whenver an animation is ended for a player.
+    // This method is called whenver an animation is ended for an enemy.
     animationComplete (animation, frame, sprite) {
         if (animation.key === 'zombie3_death') {
             this.dead = false;
