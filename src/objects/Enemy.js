@@ -14,6 +14,8 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         this.scene = scene;
         this.lastFired = 0;
+        this.dead = false;
+        this.on('animationcomplete', this.animationComplete, this);
     }
 
     moveToTarget (target) {
@@ -55,9 +57,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         bulletHit.kill();
 
         if (enemyHit.health <= 0) {
-            enemyHit.setActive(false).setVisible(false);
-            enemyHit.destroyed = true;
-            enemyHit.destroy();
+            enemyHit.dead = true;
         }
     }
 
@@ -66,12 +66,28 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.rotation = Phaser.Math.Angle.Between(this.x, this.y, target.x, target.y);
 
         // Make enemy fire
-        if (this.active) {
+        if (this.active && this.dead === false) {
             this.moveToTarget(target);
             this.anims.play('zombie3_walk', true);
         }
 
+        if (this.dead === true) {
+            this.body.setVelocityX(0);
+            this.body.setVelocityY(0);
+            this.anims.play('zombie3_death', true);
+        }
+
         scene.physics.add.overlap(this, scene.weapon.bullets, this.enemyHitCallback, null, scene);
+    }
+
+    // This method is called whenver an animation is ended for a player.
+    animationComplete (animation, frame, sprite) {
+        if (animation.key === 'zombie3_death') {
+            this.dead = false;
+            this.setActive(false).setVisible(false);
+            this.destroyed = true;
+            this.destroy();
+        }
     }
 }
 

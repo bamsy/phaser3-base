@@ -32,6 +32,7 @@ class GameScene extends Phaser.Scene {
         let basePlayerFolder = 'assets/images/sprites/tds-player-sprites/Characters/PNG_Bodyparts&Animations/PNG_Animations/Man/Walk_gun';
         let baseZombie3Folder = 'assets/images/sprites/Zombies/PNGAnimations/1LVL/Zombie3_male/Walk/';
         let basePistolShotFolder = 'assets/images/sprites/tds-player-sprites/Characters/PNG_Bodyparts&Animations/PNG_Animations/Man/Gun_Shot';
+        let baseZombie3DeathFolder = 'assets/images/sprites/Zombies/PNGAnimations/1LVL/Zombie3_male/Death/';
 
         this.load.image('bullet', 'assets/images/sprites/bullet6.png');
         this.load.image('target', 'assets/images/demoscene/ball.png');
@@ -75,6 +76,14 @@ class GameScene extends Phaser.Scene {
         this.load.image('zombie3_walk6', baseZombie3Folder + 'walk_006.png');
         this.load.image('zombie3_walk7', baseZombie3Folder + 'walk_007.png');
         this.load.image('zombie3_walk8', baseZombie3Folder + 'walk_008.png');
+
+        // Load zombie 3 death
+        this.load.image('zombie3_death0', baseZombie3DeathFolder + 'Death_000.png');
+        this.load.image('zombie3_death1', baseZombie3DeathFolder + 'Death_001.png');
+        this.load.image('zombie3_death2', baseZombie3DeathFolder + 'Death_002.png');
+        this.load.image('zombie3_death3', baseZombie3DeathFolder + 'Death_003.png');
+        this.load.image('zombie3_death4', baseZombie3DeathFolder + 'Death_004.png');
+        this.load.image('zombie3_death5', baseZombie3DeathFolder + 'Death_005.png');
     }
     create () {
         // Set world bounds
@@ -318,6 +327,20 @@ class GameScene extends Phaser.Scene {
             ],
             frameRate: 8,
             repeat: -1
+        });
+
+        // Zombie 3 Death zombie3_death0
+        this.anims.create({
+            key: 'zombie3_death',
+            frames: [ { key: 'zombie3_death0' },
+                { key: 'zombie3_death1' },
+                { key: 'zombie3_death2' },
+                { key: 'zombie3_death3' },
+                { key: 'zombie3_death4' },
+                { key: 'zombie3_death5' }
+            ],
+            frameRate: 8,
+            repeat: 0
         });
     }
 
