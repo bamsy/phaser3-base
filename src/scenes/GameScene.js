@@ -301,7 +301,7 @@ class GameScene extends Phaser.Scene {
                 { key: 'walk_gun5' }
             ],
             frameRate: 8,
-            repeat: -1
+            repeat: 0
         });
 
         // Pistol Shot Animation
