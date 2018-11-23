@@ -204,6 +204,11 @@ class GameScene extends Phaser.Scene {
         // Check for bullet collision with ball
         this.physics.add.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
 
+        // Check for player overlap with zombie
+        this.enemies.forEach(enemy => {
+            this.player.update(enemy, time, scene);
+        })
+
         // Rotates player to face towards reticle
         this.player.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y);
 
