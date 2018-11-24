@@ -22,6 +22,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.immune = false;
         this.immuneTime = 1000;
         this.health = 3;
+        this.alpha = 1;
     }
 
     playerHitCallback (player, enemy) {
@@ -30,11 +31,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             player.health -= 1; // can change to enemy damage value later
             // Cant seem to find an easy way to do this
             player.body.checkCollision.none = true;
-
+            player.alpha = 0.25;
             // set up immunity, this doesn't seem right
             this.scene.scene.time.delayedCall(player.immuneTime, (p) => {
                 p.immune = false;
-
+                player.alpha = 1;
                 // reset body physics
                 p.body.checkCollision.none = false;
             }, [ player ], this);
