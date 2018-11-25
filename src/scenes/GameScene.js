@@ -97,14 +97,14 @@ class GameScene extends Phaser.Scene {
 
         // Add background player, reticle, healthpoint sprites
         let background = this.add.image(10, 10, 'background');
+        // Set image/sprite properties
+        background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
 
         this.player = new Player(this, 400, 300, 'player_handgun');
+        this.player.createHealthBar(this.game);
         
         // create animations
         this.createAnimations();
-
-        // Set image/sprite properties
-        background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
 
         // Bullet class
         this.gunBullet = new Bullet(this);
@@ -177,11 +177,6 @@ class GameScene extends Phaser.Scene {
         // this.physics.world.setBounds(0, 50, this.worldX, this.worldY);
         // or something
         this.cameras.main.zoom = 1;
-
-        // this.cameras.main.startFollow(this.player);
-
-        // Fires bullet from player on left click of mouse
-        // this.player.bulletFireSetup();
 
         // Pointer lock will only work after mousedown
         let game = this.game;

@@ -2,11 +2,14 @@
  * Base class for a Player
  */
 class Player extends Phaser.Physics.Arcade.Sprite {
-    constructor (scene, x, y, texture, frame) {
+    constructor(scene, x, y, texture, frame) {
         super(scene, x, y, texture, frame);
         scene.physics.world.enable(this);
-        this.body.setOffset(48, 19);
-        this.body.setCircle(150);
+        this.offsetY = 19;
+        this.offsetX = 48;
+        this.circleRadius = 150;
+        this.body.setOffset(this.offsetX, this.offsetY);
+        this.body.setCircle(this.circleRadius);
         scene.add.existing(this);
         this.setMovement();
 
@@ -21,31 +24,45 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         // Set life and immunity values
         this.immune = false;
         this.immuneTime = 1000;
+        this.maxHealth = 3;
         this.health = 3;
+        this.alpha = 1;
+
+        // Set up health bar
+        this.hbWidth = this.circleRadius;
+        this.hbHeight = 5;
+        this.hbBg = '0x651828';
+        this.hbFg = '0x004c00';
+        this.rectBg = null;
+        this.rectFg = null;
     }
 
-    playerHitCallback (player, enemy) {
+    playerHitCallback(player, enemy) {
         if (!player.immune) {
             player.immune = true;
             player.health -= 1; // can change to enemy damage value later
+            // update health bar
+            player.updateHealthBar();
             // Cant seem to find an easy way to do this
             player.body.checkCollision.none = true;
-
+            player.alpha = 0.25;
             // set up immunity, this doesn't seem right
             this.scene.scene.time.delayedCall(player.immuneTime, (p) => {
                 p.immune = false;
-
+                player.alpha = 1;
                 // reset body physics
                 p.body.checkCollision.none = false;
-            }, [ player ], this);
+            }, [player], this);
         }
     }
 
-    update (enemy, time, scene) {
+    update(enemy, time, scene) {
         scene.physics.add.collider(this, enemy, this.playerHitCallback, null, scene);
+        this.updateHealthBarPosition();
     }
 
-    setMovement () {
+
+    setMovement() {
         // Assign this to a variable so we can use it.
         let player = this;
         console.log(player);
@@ -94,12 +111,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             }
         });
     }
-    
+
     /**
      * Playes the walk with gun animation
      * @param {Boolean} state 
      */
-    walkWithGun (state) {
+    walkWithGun(state) {
         this.anims.play('player_walk_gun', state);
     }
 
@@ -108,7 +125,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * Stops the animation if passed false.
      * @param {Boolean} state 
      */
-    firePistol (state) {
+    firePistol(state) {
         this.anims.play('player_pistol_shot', state);
     }
 
@@ -116,16 +133,35 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     // The walking animation was overriding the shooting animation in some cases
     // so I had to create a variable to control when the walking animation played.
     // Basically I turn the walking animation off when the gun is firing.
-    animationStart (animation, frame, sprite) {
+    animationStart(animation, frame, sprite) {
         if (animation.key === 'player_pistol_shot') {
             sprite.stopWalking = true;
         }
     }
 
     // This method is called whenver an animation is ended for a player.
-    animationComplete (animation, frame, sprite) {
+    animationComplete(animation, frame, sprite) {
         if (animation.key === 'player_pistol_shot') {
             sprite.stopWalking = false;
+        }
+    }
+
+    // Health bar should probably be its own class, 
+    createHealthBar() {
+        this.rectBg = this.scene.add.rectangle(this.x,this.y-this.offsetY, this.hbWidth, this.hbHeight, this.hbBg);
+        this.rectFg = this.scene.add.rectangle(this.x,this.y-this.offsetY, this.hbWidth, this.hbHeight, this.hbFg);
+    }
+    // health bar position
+    updateHealthBarPosition() {
+        this.rectBg.setPosition(this.x, this.y-this.offsetY);
+        this.rectFg.setPosition(this.x, this.y-this.offsetY);
+    }
+    // Update foreground
+    updateHealthBar() {
+        // Calculate the new size of the health bar
+        if (this.health >= 0) {
+            let newWidth = this.health / this.maxHealth * this.hbWidth;
+            this.rectFg.setSize(newWidth, this.hbHeight);
         }
     }
 }
