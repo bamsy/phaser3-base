@@ -30,6 +30,7 @@ class GameScene extends Phaser.Scene {
     preload () {
         // Load in images and sprites
         let basePlayerFolder = 'assets/images/sprites/tds-player-sprites/Characters/PNG_Bodyparts&Animations/PNG_Animations/Man/Walk_gun';
+        let basePlayerDeathFolder = 'assets/images/sprites/tds-player-sprites/Characters/PNG_Bodyparts&Animations/PNG_Animations/Man/Death/';
         let baseZombie3Folder = 'assets/images/sprites/Zombies/PNGAnimations/1LVL/Zombie3_male/Walk/';
         let basePistolShotFolder = 'assets/images/sprites/tds-player-sprites/Characters/PNG_Bodyparts&Animations/PNG_Animations/Man/Gun_Shot';
         let baseZombie3DeathFolder = 'assets/images/sprites/Zombies/PNGAnimations/1LVL/Zombie3_male/Death/';
@@ -66,6 +67,14 @@ class GameScene extends Phaser.Scene {
         this.load.image('pistol_shot3', basePistolShotFolder + '/Gun_Shot_003.png');
         this.load.image('pistol_shot4', basePistolShotFolder + '/Gun_Shot_004.png');
 
+        // Load Player Death Animation
+        this.load.image('player_death0', basePlayerDeathFolder + 'death_0000_Man.png');
+        this.load.image('player_death1', basePlayerDeathFolder + 'death_0001_Man.png');
+        this.load.image('player_death2', basePlayerDeathFolder + 'death_0002_Man.png');
+        this.load.image('player_death3', basePlayerDeathFolder + 'death_0003_Man.png');
+        this.load.image('player_death4', basePlayerDeathFolder + 'death_0004_Man.png');
+        this.load.image('player_death5', basePlayerDeathFolder + 'death_0005_Man.png');
+
         // Load zombie 3 male sprites
         this.load.image('zombie3_walk0', baseZombie3Folder + 'walk_000.png');
         this.load.image('zombie3_walk1', baseZombie3Folder + 'walk_001.png');
@@ -97,6 +106,7 @@ class GameScene extends Phaser.Scene {
 
         // Add background player, reticle, healthpoint sprites
         let background = this.add.image(10, 10, 'background');
+
         // Set image/sprite properties
         background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
 
@@ -199,11 +209,6 @@ class GameScene extends Phaser.Scene {
         // Check for bullet collision with ball
         this.physics.add.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
 
-        // Check for player overlap with zombie
-        this.enemies.forEach(enemy => {
-            this.player.update(enemy, time, scene);
-        })
-
         // Rotates player to face towards reticle
         this.player.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y);
 
@@ -227,10 +232,12 @@ class GameScene extends Phaser.Scene {
 
         this.enemies.forEach(enemy => {
             enemy.update(this.player, time, scene);
+            this.player.updateEnemyCollision(enemy, time, scene);
         });
         this.checkGoal();
 
         this.enemySpawner.spawn(time);
+        this.player.update();
     }
 
     // Ensures sprite speed doesnt exceed maxVelocity while update is called
@@ -312,6 +319,20 @@ class GameScene extends Phaser.Scene {
             repeat: 0
         });
 
+        // Player Death Animation
+        this.anims.create({
+            key: 'player_death',
+            frames: [ { key: 'player_death0' },
+                { key: 'player_death1' },
+                { key: 'player_death2' },
+                { key: 'player_death3' },
+                { key: 'player_death4' },
+                { key: 'player_death5' }
+            ],
+            frameRate: 8,
+            repeat: 0
+        });
+
         // Zombie 3 walking
         this.anims.create({
             key: 'zombie3_walk',
@@ -344,8 +365,8 @@ class GameScene extends Phaser.Scene {
         });
     }
 
-    testing () {
-        console.log('testing');
+    restartScene () {
+        this.scene.restart();
     }
 }
 
