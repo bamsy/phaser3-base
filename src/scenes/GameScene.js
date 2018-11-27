@@ -242,6 +242,7 @@ class GameScene extends Phaser.Scene {
         this.enemies.forEach(enemy => {
             enemy.update(this.player, time, scene);
             this.player.updateEnemyCollision(enemy, time, scene);
+            this.ball.ballEnemyUpdate(this.ball, enemy, scene);
         });
         this.checkGoal();
 

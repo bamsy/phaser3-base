@@ -22,6 +22,17 @@ class Ball extends Phaser.Physics.Arcade.Sprite {
         // bulletHit.setActive(false).setVisible(false).destroy();
         bulletHit.kill();
     }
+
+    ballEnemyUpdate (ball, enemy, scene) {
+        scene.physics.add.collider(ball, enemy, this.ballEnemyCallback, null, scene);
+    }
+
+    ballEnemyCallback (ball, enemy) {
+        // ball.velocity.x = 0;
+        // ball.velocity.y = 0;
+        // ball.acceleration.x = 0;
+        // ball.acceleration.y = 0;
+    }
 }
 
 export default Ball;
