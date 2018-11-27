@@ -59,6 +59,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         if (enemyHit.health <= 0) {
             enemyHit.dead = true;
+            this.scene.scene.updateScore(1);
         }
     }
 
