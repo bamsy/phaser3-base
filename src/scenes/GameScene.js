@@ -206,7 +206,7 @@ class GameScene extends Phaser.Scene {
         }, 0, this);
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        // Set up score
+        // Set up score -- probably make this into helper function?
         this.scoreDisplay = this.add.bitmapText(0, 0, 'font', 'SCORE: 0');
         this.scoreDisplay.fill = '0xffffff';
         this.score = 0;
@@ -290,6 +290,9 @@ class GameScene extends Phaser.Scene {
             this.rightGoals++;
             console.log('RIGHT SCORE! ' + this.rightGoals);
         }
+        
+        // update score
+        this.updateScore(10);
 
         this.ball.setVelocityX(0);
         this.ball.setVelocityY(0);
