@@ -147,7 +147,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
 
         else if (animation.key === 'player_death') {
-            console.log('RESTART SCENE!!!');
+            this.scene.scene.start('TitleScene');
             
             // Reset the health for now so we can test.
             sprite.health = 3;
