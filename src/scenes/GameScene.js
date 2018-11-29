@@ -99,7 +99,7 @@ class GameScene extends Phaser.Scene {
     }
     create() {
         // Set world bounds
-        this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
+        this.physics.world.setBounds(0, 10, this.worldX, this.worldY);
 
         // Add 2 groups for Bullet objects
         // this.playerBullets = this.physics.add.group({
@@ -108,7 +108,7 @@ class GameScene extends Phaser.Scene {
         // });
 
         // Add background player, reticle, healthpoint sprites
-        let background = this.add.image(10, 10, 'background');
+        let background = this.add.image(0, 10, 'background');
 
         // Set image/sprite properties
         background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
@@ -167,6 +167,8 @@ class GameScene extends Phaser.Scene {
         this.enemySpawner = new Spawner(Enemy, this.enemies, this, 150, 300, 'zombie3_walk0', spawnerOptions, spawnOptions);
 
         this.ball = new Ball(this, 400, 300, 'ball');
+
+        this.physics.add.collider(this.player, this.ball);
 
         this.reticle = new Reticle(this, 400, 300, 'target');
         /*this.hp1 = this.add.image(-350, -250, 'target').setScrollFactor(0.5, 0.5);
@@ -247,7 +249,7 @@ class GameScene extends Phaser.Scene {
         });
         this.checkGoal();
 
-        //this.enemySpawner.spawn(time);
+        this.enemySpawner.spawn(time);
         this.player.update();
     }
 
