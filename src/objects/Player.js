@@ -60,7 +60,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     updateEnemyCollision(enemy, time, scene) {
-        scene.physics.add.collider(this, enemy, this.playerHitCallback, null, scene);
+        scene.physics.add.overlap(this, enemy, this.playerHitCallback, null, scene);
     }
 
     setMovement() {
