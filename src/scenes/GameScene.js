@@ -30,8 +30,11 @@ class GameScene extends Phaser.Scene {
     preload() {
         // Set world bounds
         this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
-        // import weapon plugin
+
         this.load.scenePlugin('WeaponPlugin', 'plugins/WeaponPlugin.min.js', null, 'weapons');
+      
+        this.load.audio('zombiegrunt', 'assets/sounds/zombie_voice_grunt_01.wav');
+
     }
     create () {
         // create music
@@ -43,7 +46,8 @@ class GameScene extends Phaser.Scene {
         this.gunshot = this.sound.add('gunshot', { volume: 0.5 });
         this.fleshwound = this.sound.add('fleshhit', { volume: 0.5 });
         this.ballhit = this.sound.add('ballhit', { volume: 0.5 });
-
+        this.zombiegrunt = this.sound.add('zombiegrunt', { volume: 0.3 });
+        
         // Set world bounds
         this.physics.world.setBounds(0, 10, this.worldX, this.worldY);
 
