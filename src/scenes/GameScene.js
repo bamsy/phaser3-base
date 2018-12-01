@@ -84,7 +84,7 @@ class GameScene extends Phaser.Scene {
         this.weapon.fireRate = 600;
 
         this.physics.add.existing(this.player);
-        this.weapon.trackSprite(this.player, 0, 0, true);
+        this.weapon.trackSprite(this.player, 10, 10, true);
 
         // create a list and spawner for enemies
         this.enemies = [];
