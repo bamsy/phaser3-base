@@ -120,6 +120,12 @@ class GameScene extends Phaser.Scene {
         this.player.setOrigin(0.5, 0.5).setScale(0.15).setCollideWorldBounds(true).setDrag(500, 500);
         this.reticle.setOrigin(0.5, 0.5).setDisplaySize(25, 25).setCollideWorldBounds(true);
 
+        // Add some enemies
+        this.enemySpawner.addObject(Math.floor(this.worldX / 4), Math.floor(this.worldY / 4));
+        this.enemySpawner.addObject(Math.floor(this.worldX / 4), Math.floor(this.worldY - (this.worldY / 4)));
+        this.enemySpawner.addObject(Math.floor(this.worldX / 2), Math.floor(this.worldY - (this.worldY / 4)));
+        this.enemySpawner.addObject(Math.floor(this.worldX / 2), Math.floor(this.worldY / 4));
+
         // Set sprite variables
         this.player.health = 3;
 
