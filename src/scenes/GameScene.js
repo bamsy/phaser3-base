@@ -45,7 +45,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('gunfire', 'assets/images/sprites/fire1_01.png');
         this.load.audio('pistol', 'assets/sounds/pistol.mp3');
         this.load.audio('shotgun', 'assets/sounds/shotgun.mp3');
-        this.load.scenePlugin('WeaponPlugin', '../node_modules/phaser3-weapon-plugin/dist/WeaponPlugin.js', null, 'weapons');
+        this.load.scenePlugin('WeaponPlugin', 'plugins/WeaponPlugin.min.js', null, 'weapons');
 
         // Set world bounds
         this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
