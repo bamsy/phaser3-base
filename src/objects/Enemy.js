@@ -54,6 +54,28 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         scene.zombiegrunt.play();
         return enemy;
     }
+
+    playerHitCallback(enemy, player) {
+        if (!player.immune) {
+            player.immune = true;
+            player.health -= 1; // can change to enemy damage value later
+            // update health bar
+            player.updateHealthBar();
+
+            // Cant seem to find an easy way to do this
+            player.body.checkCollision.none = true;
+            player.alpha = 0.25;
+
+            // set up immunity, this doesn't seem right
+            this.scene.scene.time.delayedCall(player.immuneTime, (p) => {
+                p.immune = false;
+                player.alpha = 1;
+
+                // reset body physics
+                p.body.checkCollision.none = false;
+            }, [player], this);
+        }
+    }
     
     enemyHitCallback (enemyHit, bulletHit) {
         // lower the hp of the enemy
