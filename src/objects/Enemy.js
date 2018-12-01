@@ -69,6 +69,20 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         // check if distance < desiredSeperation
         // if true, get normailsed distance set distance = distance * desired * smoothingValue
         // enem1.x += distance.x, enemy1.y +=distance.y AND enemy2.x -= distance.x enemy2.y -= distance.y
+        let desiredSeperation = 2;
+        let smoothingValue = 0.2;
+
+        let distance = Math.sqrt(Math.pow(enemy1.x - enemy2.x, 2) + Math.pow(enemy1.y - enemy2.y, 2))
+        if (distance < desiredSeperation) {
+            let normDist = distance / 2; // don't think this is right
+            enemy1.x += normDist * smoothingValue * distance;
+            enemy1.y += normDist * smoothingValue * distance;
+            
+            enemy1.x -= normDist * smoothingValue * distance;
+            enemy1.y -= normDist * smoothingValue * distance;
+        }
+
+
         
     }
 
