@@ -13,7 +13,7 @@ class TitleScene extends Phaser.Scene {
     create () {
         this.pressX = this.add.bitmapText(200, 500, 'font', 'PRESS SPACE TO TRY AGAIN', 16);
 
-        this.header = this.add.bitmapText(300, 0, 'font', 'CONTROLS', 16);
+        this.header = this.add.bitmapText(300, 0, 'font', 'ZOMBIE BALL', 16);
         this.movement = this.add.bitmapText(300, 250, 'font', 'MOVEMENT - WASD', 16);
         this.aim = this.add.bitmapText(300, 275, 'font', 'AIM - MOUSE', 16);
         this.shoot = this.add.bitmapText(300, 300, 'font', 'SHOOT - LEFT CLICK', 16);
