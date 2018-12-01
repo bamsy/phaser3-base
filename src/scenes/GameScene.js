@@ -1,4 +1,3 @@
-import Bullet from '../objects/Bullet';
 import Player from '../objects/Player';
 import Enemy from '../objects/Enemy';
 import Reticle from '../objects/Reticle';
@@ -18,7 +17,7 @@ class GameScene extends Phaser.Scene {
         this.enemies = null;
         this.healthpoints = null;
         this.reticle = null;
-        this.playerBullets = null;
+        // this.playerBullets = null;
         this.hp1 = null;
         this.hp2 = null;
         this.hp3 = null;
@@ -102,10 +101,10 @@ class GameScene extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
 
         // Add 2 groups for Bullet objects
-        this.playerBullets = this.physics.add.group({
-            classType: Bullet,
-            runChildUpdate: true
-        });
+        // this.playerBullets = this.physics.add.group({
+        //     classType: Bullet,
+        //     runChildUpdate: true
+        // });
 
         // Add background player, reticle, healthpoint sprites
         let background = this.add.image(10, 10, 'background');
@@ -120,7 +119,7 @@ class GameScene extends Phaser.Scene {
         this.createAnimations();
 
         // Bullet class
-        this.gunBullet = new Bullet(this);
+        // this.gunBullet = new Bullet(this);
 
         //  Creates 30 bullets, using the 'bullet' graphic
         this.weapon = this.weapons.add(30, 'bullet');
@@ -142,10 +141,10 @@ class GameScene extends Phaser.Scene {
         this.weapon.fireRate = 600;
 
         // Add 2 groups for Bullet objects
-        this.enemyBullets = this.physics.add.group({
-            classType: Bullet,
-            runChildUpdate: true
-        });
+        // this.enemyBullets = this.physics.add.group({
+        //     classType: Bullet,
+        //     runChildUpdate: true
+        // });
 
         this.physics.add.existing(this.player);
         this.weapon.trackSprite(this.player, 0, 0, true);
