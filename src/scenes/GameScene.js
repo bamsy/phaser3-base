@@ -38,6 +38,8 @@ class GameScene extends Phaser.Scene {
       
         this.load.audio('zombiegrunt', 'assets/sounds/zombie_voice_grunt_01.wav');
         this.load.audio('heartpickup', 'assets/sounds/retro_beeps_collect_item_01.wav');
+        this.load.audio('scored', 'assets/sounds/collect_item_jingle_01.wav');
+        this.load.audio('zombiescore', 'assets/sounds/jingle_chime_16_negative.wav');
 
     }
     create () {
@@ -52,6 +54,8 @@ class GameScene extends Phaser.Scene {
         this.ballhit = this.sound.add('ballhit', { volume: 0.5 });
         this.zombiegrunt = this.sound.add('zombiegrunt', { volume: 0.3 });
         this.heartpickup = this.sound.add('heartpickup', { volume: 0.5 });
+        this.scoredSound = this.sound.add('scored', { volume: 0.5 });
+        this.zombiescored = this.sound.add('zombiescore', { volume: 0.5 });
         
         // Set world bounds
         this.physics.world.setBounds(0, 10, this.worldX, this.worldY);
@@ -226,11 +230,11 @@ class GameScene extends Phaser.Scene {
         if (isLeft) {
             this.leftGoals++;
             this.updateScore(10);
-            console.log('LEFT SCORE! ' + this.leftGoals);
+            this.scoredSound.play();
         } else {
             this.rightGoals++;
             this.updateScore(-10);
-            console.log('RIGHT SCORE! ' + this.rightGoals);
+            this.zombiescored.play();
         }        
 
         this.ball.setX(400);
