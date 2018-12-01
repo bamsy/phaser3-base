@@ -98,7 +98,10 @@ class GameScene extends Phaser.Scene {
             lowerInterval: 2500,
             upperInterval: 5000,
             enabled: true,
-            maxObjects: 4
+            maxObjects: 4,
+            isRandom: true,
+            maxWidth: this.worldX,
+            maxHeight: this.worldY
         };
 
         let spawnOptions = {
