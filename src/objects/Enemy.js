@@ -61,6 +61,9 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             enemyHit.dead = true;
             this.scene.scene.updateScore(1);
         }
+
+        // play the bullet hit sound
+        enemyHit.scene.fleshwound.play();
     }
 
     enemyOverlapEnemyCallback (enemy1, enemy2) {

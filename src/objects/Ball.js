@@ -12,6 +12,7 @@ class Ball extends Phaser.Physics.Arcade.Sprite {
         this.body.setDrag(100, 100);
 
         this.velocityPercent = 0.75; // percentage of imparted speed
+        this.scene = scene;
     }
 
     ballHitCallback (ballHit, bulletHit) {
@@ -21,6 +22,8 @@ class Ball extends Phaser.Physics.Arcade.Sprite {
         
         // bulletHit.setActive(false).setVisible(false).destroy();
         bulletHit.kill();
+
+        ballHit.scene.ballhit.play();
     }
 
     ballEnemyUpdate (ball, enemy, scene) {

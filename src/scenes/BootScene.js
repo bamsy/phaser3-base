@@ -87,6 +87,12 @@ class BootScene extends Phaser.Scene {
         this.load.image('zombie3_death3', baseZombie3DeathFolder + 'Death_003.png');
         this.load.image('zombie3_death4', baseZombie3DeathFolder + 'Death_004.png');
         this.load.image('zombie3_death5', baseZombie3DeathFolder + 'Death_005.png');
+
+        // load audio
+        this.load.audio('music', 'assets/sounds/BRPG_Assault_FULL_Loop.wav');
+        this.load.audio('gunshot', 'assets/sounds/gun_pistol_shot_01.wav');
+        this.load.audio('fleshhit', 'assets/sounds/bullet_impact_body_flesh_01.wav');
+        this.load.audio('ballhit', 'assets/sounds/bullet_impact_ball_01.wav');
     }
 
     create() {
