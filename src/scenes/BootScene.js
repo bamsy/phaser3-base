@@ -38,9 +38,10 @@ class BootScene extends Phaser.Scene {
         this.load.image('reticle', 'assets/images/sprites/reticle/Crosshairs_Red.svg');
         this.load.image('background', 'assets/images/soccerfield.png');
         this.load.image('gunfire', 'assets/images/sprites/fire1_01.png');
-        this.load.audio('pistol', 'assets/sounds/pistol.mp3');
-        this.load.audio('shotgun', 'assets/sounds/shotgun.mp3');
-                // Player sprite sheet - walking with gun
+        this.load.image('heart', 'assets/images/heart_t.png');
+
+
+        // Player sprite sheet - walking with gun
         // First load the player
         this.load.image('player_handgun', basePlayerFolder + '/Walk_gun_000.png');
 
