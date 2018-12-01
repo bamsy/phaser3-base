@@ -17,7 +17,6 @@ class GameScene extends Phaser.Scene {
         this.enemies = null;
         this.healthpoints = null;
         this.reticle = null;
-        // this.playerBullets = null;
         this.hp1 = null;
         this.hp2 = null;
         this.hp3 = null;
@@ -97,7 +96,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('zombie3_death4', baseZombie3DeathFolder + 'Death_004.png');
         this.load.image('zombie3_death5', baseZombie3DeathFolder + 'Death_005.png');
     }
-    create() {
+    create () {
         // Set world bounds
         this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
 
@@ -169,9 +168,7 @@ class GameScene extends Phaser.Scene {
         this.ball = new Ball(this, 400, 300, 'ball');
 
         this.reticle = new Reticle(this, 400, 300, 'target');
-        /*this.hp1 = this.add.image(-350, -250, 'target').setScrollFactor(0.5, 0.5);
-        this.hp2 = this.add.image(-300, -250, 'target').setScrollFactor(0.5, 0.5);
-        this.hp3 = this.add.image(-250, -250, 'target').setScrollFactor(0.5, 0.5);*/
+
 
         // Set image/sprite properties
         background.setOrigin(0, 0).setDisplaySize(this.worldX, this.worldY);
@@ -179,9 +176,6 @@ class GameScene extends Phaser.Scene {
         this.ball.setOrigin(0.5, 0.5).setCollideWorldBounds(true).setDrag(10, 10);
         this.player.setOrigin(0.5, 0.5).setScale(0.15).setCollideWorldBounds(true).setDrag(500, 500);
         this.reticle.setOrigin(0.5, 0.5).setDisplaySize(25, 25).setCollideWorldBounds(true);
-        /*this.hp1.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
-        this.hp2.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
-        this.hp3.setOrigin(0.5, 0.5).setDisplaySize(50, 50);*/
 
         // Set sprite variables
         this.player.health = 3;
@@ -213,7 +207,7 @@ class GameScene extends Phaser.Scene {
         this.score = 0;
     }
 
-    update(time, delta) {
+    update (time, delta) {
         let scene = this;
 
         // Check for bullet collision with ball
@@ -247,12 +241,12 @@ class GameScene extends Phaser.Scene {
         });
         this.checkGoal();
 
-        //this.enemySpawner.spawn(time);
+        this.enemySpawner.spawn(time);
         this.player.update();
     }
 
     // Ensures sprite speed doesnt exceed maxVelocity while update is called
-    constrainVelocity(sprite, maxVelocity) {
+    constrainVelocity (sprite, maxVelocity) {
         if (!sprite || !sprite.body) {
             return;
         }
@@ -271,7 +265,7 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    checkGoal() {
+    checkGoal () {
         // just for now, the net starts 200 pixels below the top of the world,
         // and ends 200 pixels above the top of the world
 
@@ -284,7 +278,7 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    goalScored(isLeft) {
+    goalScored (isLeft) {
         if (isLeft) {
             this.leftGoals++;
             this.updateScore(10);
@@ -296,12 +290,13 @@ class GameScene extends Phaser.Scene {
 
         this.ball.setX(400);
         this.ball.setY(300);
+
         // the ball will tend to roll a bit more left/right than up/down
         this.ball.body.setVelocity((Math.random()-0.5)*200, (Math.random()-0.5)*100);
     }
 
     // Create all animations for our scene here for now.
-    createAnimations() {
+    createAnimations () {
         // Player Walking with gun
         this.anims.create({
             key: 'player_walk_gun',
@@ -439,13 +434,13 @@ class GameScene extends Phaser.Scene {
         });
     }
 
-    restartScene() {
+    restartScene () {
         this.scene.restart();
     }
 
 
     // Set up scoring
-    updateScore(value) {
+    updateScore (value) {
         this.score += value;
         this.scoreDisplay.setText('SCORE: ' + this.score);
     }
