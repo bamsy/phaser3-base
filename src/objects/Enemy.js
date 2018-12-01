@@ -61,6 +61,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             player.health -= 1; // can change to enemy damage value later
             // update health bar
             player.updateHealthBar();
+            player.scene.zombiepunch.play();
 
             // Cant seem to find an easy way to do this
             player.body.checkCollision.none = true;

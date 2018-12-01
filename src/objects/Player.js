@@ -37,12 +37,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.rectFg = null;
     }
 
-    
-
-    updateEnemyCollision(enemy, time, scene) {
-        //scene.physics.add.overlap(this, enemy, this.playerHitCallback, null, scene);
-    }
-
     setMovement() {
         // Assign this to a variable so we can use it.
         let player = this;

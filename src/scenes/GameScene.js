@@ -40,6 +40,7 @@ class GameScene extends Phaser.Scene {
         this.load.audio('heartpickup', 'assets/sounds/retro_beeps_collect_item_01.wav');
         this.load.audio('scored', 'assets/sounds/collect_item_jingle_01.wav');
         this.load.audio('zombiescore', 'assets/sounds/jingle_chime_16_negative.wav');
+        this.load.audio('zombiepunch', 'assets/sounds/punch_slap_whack_hit_01.wav');
 
     }
     create () {
@@ -56,6 +57,7 @@ class GameScene extends Phaser.Scene {
         this.heartpickup = this.sound.add('heartpickup', { volume: 0.5 });
         this.scoredSound = this.sound.add('scored', { volume: 0.5 });
         this.zombiescored = this.sound.add('zombiescore', { volume: 0.5 });
+        this.zombiepunch = this.sound.add('zombiepunch', { volume: 0.5 });
         
         // Set world bounds
         this.physics.world.setBounds(0, 10, this.worldX, this.worldY);
