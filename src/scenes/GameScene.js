@@ -37,6 +37,7 @@ class GameScene extends Phaser.Scene {
         this.load.scenePlugin('WeaponPlugin', 'plugins/WeaponPlugin.min.js', null, 'weapons');
       
         this.load.audio('zombiegrunt', 'assets/sounds/zombie_voice_grunt_01.wav');
+        this.load.audio('heartpickup', 'assets/sounds/retro_beeps_collect_item_01.wav');
 
     }
     create () {
@@ -50,6 +51,7 @@ class GameScene extends Phaser.Scene {
         this.fleshwound = this.sound.add('fleshhit', { volume: 0.5 });
         this.ballhit = this.sound.add('ballhit', { volume: 0.5 });
         this.zombiegrunt = this.sound.add('zombiegrunt', { volume: 0.3 });
+        this.heartpickup = this.sound.add('heartpickup', { volume: 0.5 });
         
         // Set world bounds
         this.physics.world.setBounds(0, 10, this.worldX, this.worldY);
@@ -267,6 +269,7 @@ class GameScene extends Phaser.Scene {
 
     collectHeart (player, heart) {
         if (player.health < 3) {
+            this.heartpickup.play();
             player.health = player.health + 1;
             player.updateHealthBar();
             heart.destroyHeart();
