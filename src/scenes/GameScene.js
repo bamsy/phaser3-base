@@ -3,6 +3,7 @@ import Enemy from '../objects/Enemy';
 import Reticle from '../objects/Reticle';
 import Ball from '../objects/Ball';
 import Spawner from '../objects/Spawner';
+import Heart from '../objects/Heart';
 
 class GameScene extends Phaser.Scene {
     constructor(test) {
@@ -25,6 +26,8 @@ class GameScene extends Phaser.Scene {
         this.leftGoals = 0;
         this.rightGoals = 0;
         this.weapon = null;
+        this.maxHearts = 2;
+        this.hearts = [];
     }
 
     preload() {
@@ -189,6 +192,7 @@ class GameScene extends Phaser.Scene {
             this.player.updateEnemyCollision(enemy, time, scene);
             this.ball.ballEnemyUpdate(this.ball, enemy, scene);
         });
+
         this.checkGoal();
 
         this.enemySpawner.spawn(time);
@@ -255,6 +259,32 @@ class GameScene extends Phaser.Scene {
     updateScore (value) {
         this.score += value;
         this.scoreDisplay.setText('SCORE: ' + this.score);
+    }
+
+    spawnHeart (x, y) {
+        // remove any destroyed hearts
+        this.hearts.forEach((heart, index) => {
+            if (heart.destroyed) {
+                this.hearts.splice(index, 1);
+            }
+        });
+
+        if (this.hearts.length < this.maxHearts) {
+            let heart = new Heart(this, x, y, 'heart');
+            heart.setOrigin(0.5, 0.5).setDisplaySize(30, 30);
+            this.physics.add.overlap(this.player, heart, this.collectHeart, null, this);
+            this.hearts.push(heart);
+        }
+    }
+
+    collectHeart (player, heart) {
+        if (player.health < 3) {
+            player.health = player.health + 1;
+            player.updateHealthBar();
+            heart.destroyHeart();
+        } else {
+            heart.destroyHeart();
+        }
     }
 }
 
