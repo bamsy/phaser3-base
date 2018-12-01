@@ -82,6 +82,7 @@ class GameScene extends Phaser.Scene {
             b.body.updateBounds();
         });
 
+
         this.weapon.debugPhysics = true;
         this.weapon.bulletKillType = WeaponPlugin.consts.KILL_WORLD_BOUNDS;
         this.weapon.bulletLifespan = 500;
@@ -155,6 +156,8 @@ class GameScene extends Phaser.Scene {
         }, 0, this);
         this.cursors = this.input.keyboard.createCursorKeys();
 
+        this.physics.add.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
+
         // Set up score -- probably make this into helper function?
         this.scoreDisplay = this.add.bitmapText(0, 0, 'font', 'SCORE: 0');
         this.scoreDisplay.fill = '0xffffff';
@@ -168,7 +171,7 @@ class GameScene extends Phaser.Scene {
         let scene = this;
 
         // Check for bullet collision with ball
-        this.physics.add.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
+        //this.physics.add.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
 
         // Rotates player to face towards reticle
         this.player.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y);
@@ -193,8 +196,8 @@ class GameScene extends Phaser.Scene {
 
         this.enemies.forEach(enemy => {
             enemy.update(this.player, time, scene);
-            this.player.updateEnemyCollision(enemy, time, scene);
-            this.ball.ballEnemyUpdate(this.ball, enemy, scene);
+            //this.player.updateEnemyCollision(enemy, time, scene);
+            //this.ball.ballEnemyUpdate(this.ball, enemy, scene);
         });
 
         this.checkGoal();
