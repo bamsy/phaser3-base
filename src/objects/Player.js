@@ -37,30 +37,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.rectFg = null;
     }
 
-    playerHitCallback(player, enemy) {
-        if (!player.immune) {
-            player.immune = true;
-            player.health -= 1; // can change to enemy damage value later
-            // update health bar
-            player.updateHealthBar();
-
-            // Cant seem to find an easy way to do this
-            player.body.checkCollision.none = true;
-            player.alpha = 0.25;
-
-            // set up immunity, this doesn't seem right
-            this.scene.scene.time.delayedCall(player.immuneTime, (p) => {
-                p.immune = false;
-                player.alpha = 1;
-
-                // reset body physics
-                p.body.checkCollision.none = false;
-            }, [player], this);
-        }
-    }
+    
 
     updateEnemyCollision(enemy, time, scene) {
-        scene.physics.add.overlap(this, enemy, this.playerHitCallback, null, scene);
+        //scene.physics.add.overlap(this, enemy, this.playerHitCallback, null, scene);
     }
 
     setMovement() {
