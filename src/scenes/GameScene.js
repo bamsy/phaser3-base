@@ -156,7 +156,9 @@ class GameScene extends Phaser.Scene {
         }, 0, this);
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        this.physics.add.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
+        // test this out for a minute
+        this.physics.add.collider(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
+        //this.physics.add.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
 
         // Set up score -- probably make this into helper function?
         this.scoreDisplay = this.add.bitmapText(0, 0, 'font', 'SCORE: 0');
