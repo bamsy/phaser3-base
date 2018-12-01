@@ -234,7 +234,7 @@ class GameScene extends Phaser.Scene {
         // just for now, the net starts 200 pixels below the top of the world,
         // and ends 200 pixels above the top of the world
 
-        if (this.ball.body.top >= 200 && this.ball.body.bottom <= (this.worldY - 200)) {
+        if (this.ball.body.top >= 190 && this.ball.body.bottom <= (this.worldY - 190)) {
             if (this.ball.body.left <= this.physics.world.bounds.left) {
                 this.goalScored(true);
             } else if (this.ball.body.right >= this.physics.world.bounds.right) {
