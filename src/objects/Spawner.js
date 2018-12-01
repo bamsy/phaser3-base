@@ -43,7 +43,7 @@ class Spawner {
             } else {
                 let rngX = Math.floor(Math.random() * this.maxWidth);
                 let rngY = Math.floor(Math.random() * this.maxHeight);
-
+                
                 this.entities.push(this.entity.spawn(this.spawnOptions, this.scene, rngX, rngY, this.texture));
             }
         }

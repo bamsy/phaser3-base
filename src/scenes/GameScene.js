@@ -100,7 +100,7 @@ class GameScene extends Phaser.Scene {
             enabled: true,
             maxObjects: 4,
             isRandom: true,
-            maxWidth: this.worldX,
+            maxWidth: Math.floor(this.worldX / 2),
             maxHeight: this.worldY
         };
 
