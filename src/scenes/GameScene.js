@@ -158,7 +158,7 @@ class GameScene extends Phaser.Scene {
             lowerInterval: 2500,
             upperInterval: 5000,
             enabled: true,
-            maxObjects: 3
+            maxObjects: 4
         };
 
         let spawnOptions = {
@@ -294,11 +294,7 @@ class GameScene extends Phaser.Scene {
             this.rightGoals++;
             this.updateScore(-10);
             console.log('RIGHT SCORE! ' + this.rightGoals);
-<<<<<<< HEAD
         }        
-=======
-        }
->>>>>>> 48930e9b8af407dafd103961cdf1d9c753decd9c
 
         this.ball.setX(400);
         this.ball.setY(300);
