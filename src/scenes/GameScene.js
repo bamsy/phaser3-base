@@ -248,7 +248,7 @@ class GameScene extends Phaser.Scene {
         });
         this.checkGoal();
 
-        //this.enemySpawner.spawn(time);
+        this.enemySpawner.spawn(time);
         this.player.update();
     }
 
