@@ -118,7 +118,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @param {Boolean} state 
      */
     walkWithGun (state) {
-        this.anims.play('player_walk_gun', state);
+        console.log(Date() + "Walking")
+            this.anims.play('player_walk_gun', state);
+        
+        
     }
 
     /**

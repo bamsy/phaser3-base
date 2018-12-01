@@ -80,10 +80,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             
             enemy1.x -= normDist * smoothingValue * distance;
             enemy1.y -= normDist * smoothingValue * distance;
-        }
-
-
-        
+        }        
     }
 
     update (target, time, scene) {
