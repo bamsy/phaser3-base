@@ -176,6 +176,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     killPlayer() {
+        // set velocity/speed to 0
+        this.body.velocity.x = 0;
+        this.body.velocity.y = 0;
+        this.body.setAccelerationX(0);
+        this.body.setAccelerationY(0);
         this.anims.play('player_death', true);
     }
 
