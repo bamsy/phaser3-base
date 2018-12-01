@@ -114,7 +114,7 @@ class GameScene extends Phaser.Scene {
         // Set image/sprite properties
         background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
 
-        this.player = new Player(this, 400, 300, 'player_handgun');
+        this.player = new Player(this, 650, 300, 'player_handgun');
         this.player.createHealthBar(this.game);
 
         // create animations
