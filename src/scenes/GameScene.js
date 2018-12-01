@@ -96,8 +96,20 @@ class GameScene extends Phaser.Scene {
         this.load.image('zombie3_death3', baseZombie3DeathFolder + 'Death_003.png');
         this.load.image('zombie3_death4', baseZombie3DeathFolder + 'Death_004.png');
         this.load.image('zombie3_death5', baseZombie3DeathFolder + 'Death_005.png');
+
+        // load audio
+        this.load.audio('music', 'assets/sounds/BRPG_Assault_FULL_Loop.wav');
+        this.load.audio('gunshot', 'assets/sounds/gun_pistol_shot_01.wav');
     }
     create () {
+        // create music
+        this.music = this.sound.add('music', { volume: 0.5 });
+        this.music.loop = true;
+        this.music.play();
+
+        // create gun shot sound
+        this.gunshot = this.sound.add('gunshot', { volume: 0.5 });
+
         // Set world bounds
         this.physics.world.setBounds(0, 10, this.worldX, this.worldY);
 
@@ -124,6 +136,9 @@ class GameScene extends Phaser.Scene {
 
         //  Creates 30 bullets, using the 'bullet' graphic
         this.weapon = this.weapons.add(30, 'bullet');
+
+        let playshot = this.playshot;
+        this.weapon.eventEmitter.addListener('fire', playshot, this);
 
         // scale bullets
         this.weapon.bullets.children.each((b) => {
@@ -206,6 +221,9 @@ class GameScene extends Phaser.Scene {
         this.score = 0;
     }
 
+    playshot () {
+        this.gunshot.play();
+    }
     update (time, delta) {
         let scene = this;
 
