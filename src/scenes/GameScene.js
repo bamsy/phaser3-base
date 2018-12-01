@@ -3,6 +3,7 @@ import Enemy from '../objects/Enemy';
 import Reticle from '../objects/Reticle';
 import Ball from '../objects/Ball';
 import Spawner from '../objects/Spawner';
+import Heart from '../objects/Heart';
 
 class GameScene extends Phaser.Scene {
     constructor(test) {
@@ -25,6 +26,8 @@ class GameScene extends Phaser.Scene {
         this.leftGoals = 0;
         this.rightGoals = 0;
         this.weapon = null;
+        this.maxHearts = 2;
+        this.hearts = [];
     }
 
     preload() {
@@ -34,6 +37,7 @@ class GameScene extends Phaser.Scene {
         this.load.scenePlugin('WeaponPlugin', 'plugins/WeaponPlugin.min.js', null, 'weapons');
       
         this.load.audio('zombiegrunt', 'assets/sounds/zombie_voice_grunt_01.wav');
+        this.load.audio('heartpickup', 'assets/sounds/retro_beeps_collect_item_01.wav');
 
     }
     create () {
@@ -47,15 +51,10 @@ class GameScene extends Phaser.Scene {
         this.fleshwound = this.sound.add('fleshhit', { volume: 0.5 });
         this.ballhit = this.sound.add('ballhit', { volume: 0.5 });
         this.zombiegrunt = this.sound.add('zombiegrunt', { volume: 0.3 });
+        this.heartpickup = this.sound.add('heartpickup', { volume: 0.5 });
         
         // Set world bounds
         this.physics.world.setBounds(0, 10, this.worldX, this.worldY);
-
-        // Add 2 groups for Bullet objects
-        // this.playerBullets = this.physics.add.group({
-        //     classType: Bullet,
-        //     runChildUpdate: true
-        // });
 
         // Add background player, reticle, healthpoint sprites
         let background = this.add.image(0, 10, 'background');
@@ -88,12 +87,6 @@ class GameScene extends Phaser.Scene {
 
         //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 600ms
         this.weapon.fireRate = 600;
-
-        // Add 2 groups for Bullet objects
-        // this.enemyBullets = this.physics.add.group({
-        //     classType: Bullet,
-        //     runChildUpdate: true
-        // });
 
         this.physics.add.existing(this.player);
         this.weapon.trackSprite(this.player, 0, 0, true);
@@ -189,6 +182,7 @@ class GameScene extends Phaser.Scene {
             this.player.updateEnemyCollision(enemy, time, scene);
             this.ball.ballEnemyUpdate(this.ball, enemy, scene);
         });
+
         this.checkGoal();
 
         this.enemySpawner.spawn(time);
@@ -255,6 +249,33 @@ class GameScene extends Phaser.Scene {
     updateScore (value) {
         this.score += value;
         this.scoreDisplay.setText('SCORE: ' + this.score);
+    }
+
+    spawnHeart (x, y) {
+        // remove any destroyed hearts
+        this.hearts.forEach((heart, index) => {
+            if (heart.destroyed) {
+                this.hearts.splice(index, 1);
+            }
+        });
+
+        if (this.hearts.length < this.maxHearts) {
+            let heart = new Heart(this, x, y, 'heart');
+            heart.setOrigin(0.5, 0.5).setDisplaySize(30, 30);
+            this.physics.add.overlap(this.player, heart, this.collectHeart, null, this);
+            this.hearts.push(heart);
+        }
+    }
+
+    collectHeart (player, heart) {
+        if (player.health < 3) {
+            this.heartpickup.play();
+            player.health = player.health + 1;
+            player.updateHealthBar();
+            heart.destroyHeart();
+        } else {
+            heart.destroyHeart();
+        }
     }
 }
 
