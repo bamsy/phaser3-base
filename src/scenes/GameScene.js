@@ -93,7 +93,7 @@ class GameScene extends Phaser.Scene {
         this.weapon.fireRate = 600;
 
         this.physics.add.existing(this.player);
-        this.weapon.trackSprite(this.player, 0, 0, true);
+        this.weapon.trackSprite(this.player, 10, 10, true);
 
         // create a list and spawner for enemies
         this.enemies = [];
@@ -102,7 +102,10 @@ class GameScene extends Phaser.Scene {
             lowerInterval: 2500,
             upperInterval: 5000,
             enabled: true,
-            maxObjects: 4
+            maxObjects: 4,
+            isRandom: true,
+            maxWidth: Math.floor(this.worldX / 2),
+            maxHeight: this.worldY
         };
 
         let spawnOptions = {
