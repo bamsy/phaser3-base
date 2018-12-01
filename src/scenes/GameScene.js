@@ -36,6 +36,8 @@ class GameScene extends Phaser.Scene {
         let basePistolShotFolder = 'assets/images/sprites/tds-player-sprites/Characters/PNG_Bodyparts&Animations/PNG_Animations/Man/Gun_Shot';
         let baseZombie3DeathFolder = 'assets/images/sprites/Zombies/PNGAnimations/1LVL/Zombie3_male/Death/';
 
+        //https://opengameart.org/content/soccer-ball
+        this.load.image('ball', 'assets/images/sprites/SoccerBall.png');
         this.load.image('bullet', 'assets/images/sprites/bullet6.png');
         this.load.image('target', 'assets/images/demoscene/ball.png');
         this.load.image('reticle', 'assets/images/sprites/reticle/Crosshairs_Red.svg');
@@ -165,7 +167,7 @@ class GameScene extends Phaser.Scene {
 
         this.enemySpawner = new Spawner(Enemy, this.enemies, this, 150, 300, 'zombie3_walk0', spawnerOptions, spawnOptions);
 
-        this.ball = new Ball(this, 550, 600, 'target');
+        this.ball = new Ball(this, 400, 300, 'ball');
 
         this.reticle = new Reticle(this, 400, 300, 'reticle');
         this.hp1 = this.add.image(-350, -250, 'target').setScrollFactor(0.5, 0.5);
@@ -175,12 +177,12 @@ class GameScene extends Phaser.Scene {
         // Set image/sprite properties
         background.setOrigin(0, 0).setDisplaySize(this.worldX, this.worldY);
 
-        this.ball.setOrigin(0.5, 0.5).setScale(1.5).setCollideWorldBounds(true).setDrag(10, 10);
+        this.ball.setOrigin(0.5, 0.5).setCollideWorldBounds(true).setDrag(10, 10);
         this.player.setOrigin(0.5, 0.5).setScale(0.15).setCollideWorldBounds(true).setDrag(500, 500);
         this.reticle.setOrigin(0.5, 0.5).setDisplaySize(25, 25).setCollideWorldBounds(true);
-        this.hp1.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
+        /*this.hp1.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
         this.hp2.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
-        this.hp3.setOrigin(0.5, 0.5).setDisplaySize(50, 50);
+        this.hp3.setOrigin(0.5, 0.5).setDisplaySize(50, 50);*/
 
         // Set sprite variables
         this.player.health = 3;
@@ -246,7 +248,7 @@ class GameScene extends Phaser.Scene {
         });
         this.checkGoal();
 
-        this.enemySpawner.spawn(time);
+        //this.enemySpawner.spawn(time);
         this.player.update();
     }
 
@@ -292,12 +294,16 @@ class GameScene extends Phaser.Scene {
             this.rightGoals++;
             this.updateScore(-10);
             console.log('RIGHT SCORE! ' + this.rightGoals);
+<<<<<<< HEAD
         }        
+=======
+        }
+>>>>>>> 48930e9b8af407dafd103961cdf1d9c753decd9c
 
-        this.ball.setVelocityX(0);
-        this.ball.setVelocityY(0);
         this.ball.setX(400);
         this.ball.setY(300);
+        // the ball will tend to roll a bit more left/right than up/down
+        this.ball.body.setVelocity((Math.random()-0.5)*200, (Math.random()-0.5)*100);
     }
 
     // Create all animations for our scene here for now.
