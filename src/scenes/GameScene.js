@@ -47,12 +47,6 @@ class GameScene extends Phaser.Scene {
         // Set world bounds
         this.physics.world.setBounds(0, 10, this.worldX, this.worldY);
 
-        // Add 2 groups for Bullet objects
-        // this.playerBullets = this.physics.add.group({
-        //     classType: Bullet,
-        //     runChildUpdate: true
-        // });
-
         // Add background player, reticle, healthpoint sprites
         let background = this.add.image(0, 10, 'background');
 
@@ -84,12 +78,6 @@ class GameScene extends Phaser.Scene {
 
         //  Speed-up the rate of fire, allowing them to shoot 1 bullet every 600ms
         this.weapon.fireRate = 600;
-
-        // Add 2 groups for Bullet objects
-        // this.enemyBullets = this.physics.add.group({
-        //     classType: Bullet,
-        //     runChildUpdate: true
-        // });
 
         this.physics.add.existing(this.player);
         this.weapon.trackSprite(this.player, 0, 0, true);
