@@ -101,7 +101,8 @@ class GameScene extends Phaser.Scene {
             maxObjects: 4,
             isRandom: true,
             maxWidth: Math.floor(this.worldX / 2),
-            maxHeight: this.worldY
+            maxHeight: this.worldY,
+            continousSpawn: true
         };
 
         let spawnOptions = {
