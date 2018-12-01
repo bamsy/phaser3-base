@@ -286,14 +286,13 @@ class GameScene extends Phaser.Scene {
     goalScored(isLeft) {
         if (isLeft) {
             this.leftGoals++;
+            this.updateScore(10);
             console.log('LEFT SCORE! ' + this.leftGoals);
         } else {
             this.rightGoals++;
+            this.updateScore(-10);
             console.log('RIGHT SCORE! ' + this.rightGoals);
-        }
-        
-        // update score
-        this.updateScore(10);
+        }        
 
         this.ball.setVelocityX(0);
         this.ball.setVelocityY(0);
