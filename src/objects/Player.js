@@ -146,7 +146,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (animation.key === 'player_pistol_shot') {
             sprite.stopWalking = false;
         } else if (animation.key === 'player_death') {
-            this.scene.scene.start('TitleScene');
+            this.scene.scene.stop('GameScene');
+
+            this.scene.scene.remove('GameScene');
+
+            this.scene.scene.start('ScoreScene', { score: this.scene.score });
 
             // Reset the health for now so we can test.
             sprite.health = 3;

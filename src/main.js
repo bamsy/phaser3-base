@@ -2,6 +2,7 @@ import 'phaser';
 import BootScene from './scenes/BootScene';
 import TitleScene from './scenes/TitleScene';
 import GameScene from './scenes/GameScene';
+import ScoreScene from './scenes/ScoreScene';
 import { Plugin as WeaponPlugin } from 'phaser3-weapon-plugin';
 
 var config = {
@@ -21,7 +22,8 @@ var config = {
     scene: [
         BootScene,
         TitleScene,
-        GameScene
+        GameScene,
+        ScoreScene
     ]
 };
 
