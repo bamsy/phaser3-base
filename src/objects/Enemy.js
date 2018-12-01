@@ -46,6 +46,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             scene.physics.add.collider(options.collisionTarget, enemy);
         }
         
+        scene.zombiegrunt.play();
         return enemy;
     }
     

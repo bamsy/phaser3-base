@@ -102,6 +102,7 @@ class GameScene extends Phaser.Scene {
         this.load.audio('gunshot', 'assets/sounds/gun_pistol_shot_01.wav');
         this.load.audio('fleshhit', 'assets/sounds/bullet_impact_body_flesh_01.wav');
         this.load.audio('ballhit', 'assets/sounds/bullet_impact_ball_01.wav');
+        this.load.audio('zombiegrunt', 'assets/sounds/zombie_voice_grunt_01.wav');
     }
     create () {
         // create music
@@ -113,7 +114,8 @@ class GameScene extends Phaser.Scene {
         this.gunshot = this.sound.add('gunshot', { volume: 0.5 });
         this.fleshwound = this.sound.add('fleshhit', { volume: 0.5 });
         this.ballhit = this.sound.add('ballhit', { volume: 0.5 });
-
+        this.zombiegrunt = this.sound.add('zombiegrunt', { volume: 0.3 });
+        
         // Set world bounds
         this.physics.world.setBounds(0, 10, this.worldX, this.worldY);
 
