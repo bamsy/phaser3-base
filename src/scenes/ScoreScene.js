@@ -14,10 +14,10 @@ class ScoreScene extends Phaser.Scene {
     }
 
     create () {
-        this.pressX = this.add.bitmapText(150, 500, 'font', 'PRESS SPACE TO TRY AGAIN', 16);
+        this.pressX = this.add.bitmapText(200, 500, 'font', 'PRESS SPACE TO TRY AGAIN', 16);
 
-        this.header = this.add.bitmapText(275, 0, 'font', 'YOUR SCORE:', 16);
-        this.scoreDisplay = this.add.bitmapText(300, 250, 'font', this.score, 16);
+        this.header = this.add.bitmapText(300, 0, 'font', 'YOUR SCORE:', 16);
+        this.scoreDisplay = this.add.bitmapText(375, 250, 'font', this.score, 16);
 
         this.blink = 1000;
 
