@@ -156,6 +156,7 @@ class GameScene extends Phaser.Scene {
         }, 0, this);
         this.cursors = this.input.keyboard.createCursorKeys();
 
+
         // test this out for a minute
         this.physics.add.collider(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
         //this.physics.add.overlap(this.ball, this.weapon.bullets, this.ball.ballHitCallback, null, this);
