@@ -17,6 +17,10 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.dead = false;
         this.immovable = true;
         this.on('animationcomplete', this.animationComplete, this);
+
+        scene.physics.add.overlap(this, scene.player, this.playerHitCallback, null, scene);
+        scene.physics.add.overlap(this, scene.weapon.bullets, this.enemyHitCallback, null, scene);
+        scene.physics.add.collider(this, scene.enemies, this.enemyOverlapEnemyCallback, null, scene);
     }
 
     moveToTarget (target) {
@@ -104,8 +108,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.anims.play('zombie3_death', true);
         }
 
-        scene.physics.add.overlap(this, scene.weapon.bullets, this.enemyHitCallback, null, scene);
-        scene.physics.add.collider(this, scene.enemies, this.enemyOverlapEnemyCallback, null, scene);
+
     }
 
     // This method is called whenver an animation is ended for an enemy.
