@@ -39,6 +39,7 @@ class GameScene extends Phaser.Scene {
 
         this.load.image('bullet', 'assets/images/sprites/bullet6.png');
         this.load.image('target', 'assets/images/demoscene/ball.png');
+        this.load.image('reticle', 'assets/images/sprites/reticle/Crosshairs_Red.svg');
         this.load.image('background', 'assets/images/soccerfield.png');
         this.load.image('gunfire', 'assets/images/sprites/fire1_01.png');
         this.load.audio('pistol', 'assets/sounds/pistol.mp3');
@@ -167,7 +168,7 @@ class GameScene extends Phaser.Scene {
 
         this.ball = new Ball(this, 550, 600, 'target');
 
-        this.reticle = new Reticle(this, 400, 300, 'target');
+        this.reticle = new Reticle(this, 400, 300, 'reticle');
         this.hp1 = this.add.image(-350, -250, 'target').setScrollFactor(0.5, 0.5);
         this.hp2 = this.add.image(-300, -250, 'target').setScrollFactor(0.5, 0.5);
         this.hp3 = this.add.image(-250, -250, 'target').setScrollFactor(0.5, 0.5);
