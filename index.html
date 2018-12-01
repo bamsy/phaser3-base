@@ -22,11 +22,22 @@
           -ms-interpolation-mode: nearest-neighbor;    /* IE (non standard naming) */
           image-rendering: pixelated;                  /* Chrome 41 */
         }
+        #contentWrapper {
+            margin: 5em;
+            text-align: center;
+        }
+        #content canvas {
+            border-style: solid;
+            border-color: orange;
+        }
+        content
     </style>
 </head>
 
 <body style="background-color: black;">
-    <div style="text-align: center"><span style="color: white;">Setup</span> </div>
-    <div id="content" style="display: block; width: 100%; text-align: center"></div>
+    <div id="contentWrapper">
+      <div id="content"></div>
+    </div>
+
 <script type="text/javascript" src="./dev/vendor.js"></script><script type="text/javascript" src="./dev/app.js"></script></body>
 </html>

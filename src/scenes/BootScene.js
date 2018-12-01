@@ -14,7 +14,7 @@ class BootScene extends Phaser.Scene {
 
         this.load.on('complete', () => {
             progress.destroy();
-            this.scene.start('TitleScene');
+            this.scene.start('GameScene');
         });
 
         // Texture packer will do this for us

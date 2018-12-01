@@ -1,5 +1,3 @@
-import { addCollisions } from '../common/Utilities';
-
 /**
  * Base class for a Player
  */
@@ -7,51 +5,68 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, texture, frame) {
         super(scene, x, y, texture, frame);
         scene.physics.world.enable(this);
-        this.body.setCircle(22);
+        this.offsetY = 19;
+        this.offsetX = 48;
+        this.circleRadius = 150;
+        this.body.setOffset(this.offsetX, this.offsetY);
+        this.body.setCircle(this.circleRadius);
         scene.add.existing(this);
         this.setMovement();
+
+        // Variable to control the walking animation since it will override the shooting
+        // animation when running and shooting.
+        this.stopWalking = false;
+
+        // set animation listener
+        this.on('animationstart', this.animationStart, this);
+        this.on('animationcomplete', this.animationComplete, this);
+
+        // Set life and immunity values
+        this.immune = false;
+        this.immuneTime = 1000;
+        this.maxHealth = 3;
+        this.health = 3;
+        this.alpha = 1;
+
+        // Set up health bar
+        this.hbWidth = this.circleRadius;
+        this.hbHeight = 5;
+        this.hbBg = '0x651828';
+        this.hbFg = '0x004c00';
+        this.rectBg = null;
+        this.rectFg = null;
     }
 
-    bulletFireSetup () {
-        let scene = this.scene;
+    playerHitCallback (player, enemy) {
+        if (!player.immune) {
+            player.immune = true;
+            player.health -= 1; // can change to enemy damage value later
+            // update health bar
+            player.updateHealthBar();
 
-        // Fires bullet from player on left click of mouse
-        scene.input.on('pointerdown', function (pointer, time, lastFired) {
-            if (scene.player.active === false) {
-                return;
-            }
+            // Cant seem to find an easy way to do this
+            player.body.checkCollision.none = true;
+            player.alpha = 0.25;
 
-            // Get bullet from bullets group
-            var bullet = scene.playerBullets.get().setActive(true).setVisible(true);
+            // set up immunity, this doesn't seem right
+            this.scene.scene.time.delayedCall(player.immuneTime, (p) => {
+                p.immune = false;
+                player.alpha = 1;
 
-            // console.log(bullet)
-    
-            if (bullet) {
-                bullet.fire(scene.player, scene.reticle);
+                // reset body physics
+                p.body.checkCollision.none = false;
+            }, [ player ], this);
+        }
+    }
 
-                // add collisions
-                let collisionObjects = [
-                    {
-                        target: scene.ball,
-                        callback: scene.ball.ballHitCallback
-                    }
-                ];
-
-                scene.enemies.forEach(enemy => {
-                    collisionObjects.push({
-                        target: enemy,
-                        callback: enemy.enemyHitCallback
-                    });
-                });
-
-                addCollisions(scene, bullet, collisionObjects);
-            }
-        }, scene);
+    updateEnemyCollision (enemy, time, scene) {
+        scene.physics.add.collider(this, enemy, this.playerHitCallback, null, scene);
     }
 
     setMovement () {
         // Assign this to a variable so we can use it.
         let player = this;
+        console.log(player);
 
         // Creates object for input with WASD kets
         let moveKeys = player.scene.input.keyboard.addKeys({
@@ -98,29 +113,79 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
-    playerHitCallback (playerHit, bulletHit) {
-        // Reduce health of player
-        let scene = playerHit.scene;
+    /**
+     * Playes the walk with gun animation
+     * @param {Boolean} state 
+     */
+    walkWithGun (state) {
+        this.anims.play('player_walk_gun', state);
+    }
 
-        if (bulletHit.active === true && playerHit.active === true) {
-            playerHit.health = playerHit.health - 1;
-            console.log('Player hp: ', playerHit.health);
+    /**
+     * Plays the pistol shot animation if passed true,
+     * Stops the animation if passed false.
+     * @param {Boolean} state 
+     */
+    firePistol (state) {
+        this.anims.play('player_pistol_shot', state);
+    }
 
-            // Kill hp sprites and kill player if health <= 0
-            if (playerHit.health === 2) {
-                scene.hp3.destroy();
-            }
-            else if (playerHit.health === 1) {
-                scene.hp2.destroy();
-            }
-            else {
-                scene.hp1.destroy();
+    // This method is called whenever an animation is started for a player.
+    // The walking animation was overriding the shooting animation in some cases
+    // so I had to create a variable to control when the walking animation played.
+    // Basically I turn the walking animation off when the gun is firing.
+    animationStart (animation, frame, sprite) {
+        if (animation.key === 'player_pistol_shot') {
+            sprite.stopWalking = true;
+        }
+    }
 
-                // Game over state should execute here
-            }
+    // This method is called whenver an animation is ended for a player.
+    animationComplete (animation, frame, sprite) {
+        if (animation.key === 'player_pistol_shot') {
+            sprite.stopWalking = false;
+        }
 
-            // Destroy bullet
-            bulletHit.setActive(false).setVisible(false);
+        else if (animation.key === 'player_death') {
+            this.scene.scene.start('TitleScene');
+            
+            // Reset the health for now so we can test.
+            sprite.health = 3;
+            sprite.stopWalking = false;
+        }
+    }
+
+    // Health bar should probably be its own class, 
+    createHealthBar () {
+        this.rectBg = this.scene.add.rectangle(this.x, this.y - this.offsetY, this.hbWidth, this.hbHeight, this.hbBg);
+        this.rectFg = this.scene.add.rectangle(this.x, this.y - this.offsetY, this.hbWidth, this.hbHeight, this.hbFg);
+    }
+
+    // health bar position
+    updateHealthBarPosition () {
+        this.rectBg.setPosition(this.x, this.y - this.offsetY);
+        this.rectFg.setPosition(this.x, this.y - this.offsetY);
+    }
+
+    // Update foreground
+    updateHealthBar () {
+        // Calculate the new size of the health bar
+        if (this.health >= 0) {
+            let newWidth = this.health / this.maxHealth * this.hbWidth;
+            this.rectFg.setSize(newWidth, this.hbHeight);
+        }
+    }
+
+    killPlayer () {
+        this.anims.play('player_death', true);
+    }
+
+    update () {
+        this.updateHealthBarPosition();
+
+        if (this.health <= 0) {
+            this.stopWalking = true;
+            this.killPlayer();
         }
     }
 }
