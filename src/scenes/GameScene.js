@@ -39,11 +39,12 @@ class GameScene extends Phaser.Scene {
         this.load.image('ball', 'assets/images/sprites/SoccerBall.png');
         this.load.image('bullet', 'assets/images/sprites/bullet6.png');
         this.load.image('target', 'assets/images/demoscene/ball.png');
+        this.load.image('reticle', 'assets/images/sprites/reticle/Crosshairs_Red.svg');
         this.load.image('background', 'assets/images/soccerfield.png');
         this.load.image('gunfire', 'assets/images/sprites/fire1_01.png');
         this.load.audio('pistol', 'assets/sounds/pistol.mp3');
         this.load.audio('shotgun', 'assets/sounds/shotgun.mp3');
-        this.load.scenePlugin('WeaponPlugin', '../node_modules/phaser3-weapon-plugin/dist/WeaponPlugin.js', null, 'weapons');
+        this.load.scenePlugin('WeaponPlugin', 'plugins/WeaponPlugin.min.js', null, 'weapons');
 
         // Set world bounds
         this.physics.world.setBounds(0, 0, this.worldX, this.worldY);
@@ -112,7 +113,7 @@ class GameScene extends Phaser.Scene {
         // Set image/sprite properties
         background.setOrigin(0.5, 0.5).setDisplaySize(this.worldX, this.worldY);
 
-        this.player = new Player(this, 400, 300, 'player_handgun');
+        this.player = new Player(this, 650, 300, 'player_handgun');
         this.player.createHealthBar(this.game);
 
         // create animations
@@ -156,7 +157,7 @@ class GameScene extends Phaser.Scene {
             lowerInterval: 2500,
             upperInterval: 5000,
             enabled: true,
-            maxObjects: 3
+            maxObjects: 4
         };
 
         let spawnOptions = {
@@ -164,13 +165,9 @@ class GameScene extends Phaser.Scene {
         };
 
         this.enemySpawner = new Spawner(Enemy, this.enemies, this, 150, 300, 'zombie3_walk0', spawnerOptions, spawnOptions);
-
         this.ball = new Ball(this, 400, 300, 'ball');
-
+        this.reticle = new Reticle(this, 400, 300, 'reticle');
         this.physics.add.collider(this.player, this.ball);
-
-        this.reticle = new Reticle(this, 400, 300, 'target');
-
 
         // Set image/sprite properties
         background.setOrigin(0, 0).setDisplaySize(this.worldX, this.worldY);
@@ -287,8 +284,9 @@ class GameScene extends Phaser.Scene {
             console.log('LEFT SCORE! ' + this.leftGoals);
         } else {
             this.rightGoals++;
+            this.updateScore(-10);
             console.log('RIGHT SCORE! ' + this.rightGoals);
-        }
+        }        
 
         this.ball.setX(400);
         this.ball.setY(300);
