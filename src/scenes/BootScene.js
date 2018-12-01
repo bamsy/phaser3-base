@@ -33,10 +33,8 @@ class BootScene extends Phaser.Scene {
         //https://opengameart.org/content/soccer-ball
         this.load.image('ball', 'assets/images/sprites/SoccerBall.png');
         this.load.image('bullet', 'assets/images/sprites/bullet6.png');
-        this.load.image('target', 'assets/images/demoscene/ball.png');
         this.load.image('reticle', 'assets/images/sprites/reticle/Crosshairs_Red.svg');
         this.load.image('background', 'assets/images/soccerfield.png');
-        this.load.image('gunfire', 'assets/images/sprites/fire1_01.png');
         this.load.image('heart', 'assets/images/heart_t.png');
 
 
