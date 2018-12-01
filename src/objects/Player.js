@@ -2,7 +2,7 @@
  * Base class for a Player
  */
 class Player extends Phaser.Physics.Arcade.Sprite {
-    constructor (scene, x, y, texture, frame) {
+    constructor(scene, x, y, texture, frame) {
         super(scene, x, y, texture, frame);
         scene.physics.world.enable(this);
         this.offsetY = 19;
@@ -37,7 +37,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.rectFg = null;
     }
 
-    playerHitCallback (player, enemy) {
+    playerHitCallback(player, enemy) {
         if (!player.immune) {
             player.immune = true;
             player.health -= 1; // can change to enemy damage value later
@@ -55,15 +55,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
                 // reset body physics
                 p.body.checkCollision.none = false;
-            }, [ player ], this);
+            }, [player], this);
         }
     }
 
-    updateEnemyCollision (enemy, time, scene) {
-        scene.physics.add.collider(this, enemy, this.playerHitCallback, null, scene);
+    updateEnemyCollision(enemy, time, scene) {
+        scene.physics.add.overlap(this, enemy, this.playerHitCallback, null, scene);
     }
 
-    setMovement () {
+    setMovement() {
         // Assign this to a variable so we can use it.
         let player = this;
         console.log(player);
@@ -117,11 +117,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * Playes the walk with gun animation
      * @param {Boolean} state 
      */
-    walkWithGun (state) {
-        console.log(Date() + "Walking")
-            this.anims.play('player_walk_gun', state);
-        
-        
+    walkWithGun(state) {
+        this.anims.play('player_walk_gun', state);
+
     }
 
     /**
@@ -129,7 +127,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * Stops the animation if passed false.
      * @param {Boolean} state 
      */
-    firePistol (state) {
+    firePistol(state) {
         this.anims.play('player_pistol_shot', state);
     }
 
@@ -137,21 +135,19 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     // The walking animation was overriding the shooting animation in some cases
     // so I had to create a variable to control when the walking animation played.
     // Basically I turn the walking animation off when the gun is firing.
-    animationStart (animation, frame, sprite) {
+    animationStart(animation, frame, sprite) {
         if (animation.key === 'player_pistol_shot') {
             sprite.stopWalking = true;
         }
     }
 
     // This method is called whenver an animation is ended for a player.
-    animationComplete (animation, frame, sprite) {
+    animationComplete(animation, frame, sprite) {
         if (animation.key === 'player_pistol_shot') {
             sprite.stopWalking = false;
-        }
-
-        else if (animation.key === 'player_death') {
+        } else if (animation.key === 'player_death') {
             this.scene.scene.start('TitleScene');
-            
+
             // Reset the health for now so we can test.
             sprite.health = 3;
             sprite.stopWalking = false;
@@ -159,19 +155,19 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     // Health bar should probably be its own class, 
-    createHealthBar () {
+    createHealthBar() {
         this.rectBg = this.scene.add.rectangle(this.x, this.y - this.offsetY, this.hbWidth, this.hbHeight, this.hbBg);
         this.rectFg = this.scene.add.rectangle(this.x, this.y - this.offsetY, this.hbWidth, this.hbHeight, this.hbFg);
     }
 
     // health bar position
-    updateHealthBarPosition () {
+    updateHealthBarPosition() {
         this.rectBg.setPosition(this.x, this.y - this.offsetY);
         this.rectFg.setPosition(this.x, this.y - this.offsetY);
     }
 
     // Update foreground
-    updateHealthBar () {
+    updateHealthBar() {
         // Calculate the new size of the health bar
         if (this.health >= 0) {
             let newWidth = this.health / this.maxHealth * this.hbWidth;
@@ -179,11 +175,16 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    killPlayer () {
+    killPlayer() {
+        // set velocity/speed to 0
+        this.body.velocity.x = 0;
+        this.body.velocity.y = 0;
+        this.body.setAccelerationX(0);
+        this.body.setAccelerationY(0);
         this.anims.play('player_death', true);
     }
 
-    update () {
+    update() {
         this.updateHealthBarPosition();
 
         if (this.health <= 0) {
